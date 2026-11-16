@@ -1,0 +1,27 @@
+{
+  "name": "dsh-emotion-pool",
+  "displayName": "ESP 情绪插件",
+  "description": "ESP 情绪插件：三轴情绪状态 + 思考轨迹波动打点（0.2）",
+  "version": "0.2.5",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./widget.js": "./assets/widget.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
