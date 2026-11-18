@@ -4,8 +4,8 @@ import { join } from 'node:path'
 const 目录 = mkdtempSync(join(tmpdir(), 'dbg-'))
 process.env.EMOTION_POOL_DIR = 目录
 const 模 = await import('../lib/index.js')
-const 会话='session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
-const 配置={启用:true,校验启用:false,双轨重做:true,双轨阈值:0.15,分身每批:300,提醒启用:true,守恒上限:1,写入者:['aaaaaaaa'],注入启用:false,刻度:1,日志:['情绪池-日志.md','情绪池-日志.jsonl']}
+const 会话='session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
+const 配置={启用:true,校验启用:false,双轨重做:true,双轨阈值:0.15,分身每批:300,提醒启用:true,守恒上限:1,写入者:['c4b92d68'],注入启用:false,刻度:1,日志:['情绪池-日志.md','情绪池-日志.jsonl']}
 try{rmSync(join(目录,'情绪池.json.lock'))}catch{}
 writeFileSync(join(目录,'情绪池.json'),JSON.stringify({rev:0,axes:{E:0,S:0,P:0},spine:{S:0},prev_cell:'E0S0P0',events:[],stats:{selfreport_total:0,missed_total:0}},null,2))
 writeFileSync(join(目录,'情绪池配置.json'),JSON.stringify(配置,null,2))

@@ -1,4 +1,4 @@
-// v0.8 A：新自报格式、点数×认知度、两轨合成、K、分身额度、提醒隔离
+﻿// v0.8 A：新自报格式、点数×认知度、两轨合成、K、分身额度、提醒隔离
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs'
@@ -18,12 +18,12 @@ const 配置 = {
   分身每批: 300,
   提醒启用: true,
   守恒上限: 1,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
-const 会话 = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话 = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 删除锁() { try { rmSync(join(目录, '情绪池.json.lock')) } catch {} }
 

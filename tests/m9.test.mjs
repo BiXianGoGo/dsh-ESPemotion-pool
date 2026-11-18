@@ -18,7 +18,7 @@ const 配置 = {
   提醒启用: false,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   刺阈值: 0.25,
@@ -64,7 +64,7 @@ function 起插件() {
     agents: { list: () => [] },
   }
   模块.apply(ctx)
-  return { 路由, 发: (ev) => { for (const fn of 监听) fn({ id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }, ev) } }
+  return { 路由, 发: (ev) => { for (const fn of 监听) fn({ id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }, ev) } }
 }
 
 async function 调(路由, path) {

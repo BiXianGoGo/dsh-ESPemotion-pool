@@ -2,10 +2,10 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-const 库 = new URL('../lib/index.js', import.meta.url).href
-const 双 = new URL('../lib/dual.js', import.meta.url).href
-const 源 = readFileSync(new URL('../lib/index.js', import.meta.url), 'utf8')
-const 屏源 = readFileSync(new URL('../assets/widget.js', import.meta.url), 'utf8')
+const 库 = 'file:///C:/Users/Administrator/Documents/deepseek-harness/default-workspace/plugins/emotion-pool/lib/index.js'
+const 双 = 'file:///C:/Users/Administrator/Documents/deepseek-harness/default-workspace/plugins/emotion-pool/lib/dual.js'
+const 源 = readFileSync('C:/Users/Administrator/Documents/deepseek-harness/default-workspace/plugins/emotion-pool/lib/index.js', 'utf8')
+const 屏源 = readFileSync('C:/Users/Administrator/Documents/deepseek-harness/default-workspace/plugins/emotion-pool/assets/widget.js', 'utf8')
 
 test('A2 比曲线：平均偏移与对齐率', async () => {
   const { 比曲线 } = await import(双)

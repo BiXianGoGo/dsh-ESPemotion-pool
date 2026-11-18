@@ -12,8 +12,8 @@ test('第一页最近 200 点宽路径，滚轮只平移不缩放', () => {
 })
 
 test('会话名配置：默认两个映射、对象校验、设置页可改', () => {
-  const r = 校验设置('会话名', { 'bbbbbbbb': '聊天间', 'cccccccc': '测试组' })
-  assert.equal(r.值['bbbbbbbb'], '聊天间')
+  const r = 校验设置('会话名', { '8f689553': '聊天间', '6a169bce': '测试组' })
+  assert.equal(r.值['8f689553'], '聊天间')
   assert.ok(校验设置('会话名', { bad: 'x' }).错误)
   assert.ok(前端.includes("window.__epNames"))
   assert.ok(前端.includes('data-jsave'))

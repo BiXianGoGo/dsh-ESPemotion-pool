@@ -13,7 +13,7 @@ const 模块 = await import('../lib/index.js')
 
 const 基础配置 = {
   启用: true,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: true,
   刻度: 1,
   守恒上限: 1.0,

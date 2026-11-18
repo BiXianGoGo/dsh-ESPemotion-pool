@@ -23,8 +23,8 @@ test('组零点：组份各自独立，不共享对象', () => {
 })
 
 test('组归名：命中组 / 不在组里给 null', () => {
-  const 配置 = { 组: [{ 名: '常用', 会话: ['aaaaaaaa'] }, { 名: '测试', 会话: ['cccccccc'] }] }
-  assert.equal(模.组归名('session-aaaaaaaa-xxxx', 配置), '常用')
+  const 配置 = { 组: [{ 名: '常用', 会话: ['c4b92d68'] }, { 名: '测试', 会话: ['6a169bce'] }] }
+  assert.equal(模.组归名('session-c4b92d68-xxxx', 配置), '常用')
   assert.equal(模.组归名('deadbeef', 配置), null)
 })
 

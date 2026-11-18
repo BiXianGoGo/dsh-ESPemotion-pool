@@ -154,7 +154,7 @@
     '.ep-ev-who{color:#c9d0e2;flex:none}',
     '.ep-ev-d{color:#dfe4f1;font-variant-numeric:tabular-nums;flex:none}',
     '.ep-ev-src{color:#6c7488;flex:none;margin-left:auto}',
-    '.ep-ev-q{flex:1 1 100%;color:#b6bccd;padding-top:2px;overflow-wrap:anywhere;white-space:normal}',
+    '.ep-st{font-size:10px;opacity:.75;border:1px solid currentColor;border-radius:6px;padding:0 4px;margin:0 2px;white-space:nowrap}.ep-st-基线{opacity:.55}.ep-st-波动{opacity:.7}.ep-st-趋势{opacity:.85}.ep-st-跳变{opacity:1;font-weight:600}\n.ep-ev-q{flex:1 1 100%;color:#b6bccd;padding-top:2px;overflow-wrap:anywhere;white-space:normal}',
     '.ep-dot{fill:#7d869c;opacity:.45;pointer-events:none}',
     '.ep-dot.on{fill:#fff;opacity:1}',
     '.ep-ev-name{color:#e0b15a;flex:none;margin-right:6px}',
@@ -1497,7 +1497,7 @@ function 带号(v) { var x = Number(v) || 0; return (x >= 0 ? '+' : '−') + Mat
   function 观名(k) {
     var 图 = window.__epNames || {}
     if (图 && typeof 图 === 'object' && typeof 图[k] === 'string' && 图[k]) return 图[k]
-    return k === 'bbbbbbbb' ? '助手聊天间3' : k === 'cccccccc' ? '策划间' : k === 'dddddddd' ? '助手工作间' : k
+    return k === '8f689553' ? '小汐聊天间3' : k === '6a169bce' ? '策划间' : k === '3be73c36' ? '小汐工作间' : k
   }
   function 观行(标, 值, 提) {
     return '<div class="obr"><span class="ok" data-tip="' + 转义(提 || 标) + '">' + 转义(标) + ' <i class="ep-q">?</i></span><span class="ov">' + 转义(String(值)) + '</span></div>'
@@ -1558,7 +1558,14 @@ function 带号(v) { var x = Number(v) || 0; return (x >= 0 ? '+' : '−') + Mat
     var 注 = (s && s.注入) || {}
     var 注体 = 观行('今日注入', (注.今日 != null ? 注.今日 : '—') + ' / ' + (注.日限 != null ? 注.日限 : '—'), '今日已注入次数 / 日限')
       + 观行('本轮推轴来源', 注.本轮推轴来源 || s.推轴来源 || '—', '轨迹 / 自报兜底 / 无')
+      + (最新 && 最新.校准 ? 观行('门槛', '基线 ' + Number(最新.校准.门槛.基线).toFixed(2) + ' · 趋势 R²' + Number(最新.校准.门槛.趋势).toFixed(2) + ' · 跳变 ' + Number(最新.校准.门槛.跳变).toFixed(2) + '（校准 ' + Number(最新.校准.样本数) + '/' + Number(最新.校准.目标) + ' 轮）', (最新.校准.门槛.先验 ? '样本不足，先用先验' : '池内分位自标定') + ' · 权重 角' + Number(最新.校准.权重.角).toFixed(2) + ' 数' + Number(最新.校准.权重.数).toFixed(2) + ' 距' + Number(最新.校准.权重.距).toFixed(2)) : '')
       + 观行('吸附系数', 注.吸附系数 != null ? Number(注.吸附系数).toFixed(2) : (s && s.吸附系数 != null ? Number(s.吸附系数).toFixed(2) : '—'), '波动点向新点靠近的比例')
+      + (最新 && 最新.片分布 ? 观行('8 片分布', (function () {
+        var 计 = 最新.片分布.计数 || {}
+        var 段 = []
+        for (var i = 1; i <= 8; i++) 段.push(i + ':' + (Number(计[i]) || 0))
+        return 段.join(' · ') + '（无片 ' + (Number(最新.片分布.无片) || 0) + '）'
+      })(), '3 问 8 片：有方向/无方向 × 抖法 × 折返（空片保留，数据来自 /state.片分布）') : '')
       + 观行('曲线速度', 注.曲线速度 != null ? 注.曲线速度 + ' px/s' : '—', '折线平移动画速度上限')
     盒.innerHTML = 签
       + 观组('本轮判定', 折.判定 !== false, 判体)
@@ -1634,6 +1641,26 @@ function 待确认签() {
   var t = (最新 && 最新.模板) || {}
   return [Number(t.总) || 0, Number(t.候选) || 0, (t.最近 && t.最近.名) || ''].join('|')
 }
+function 候选补(盒) {
+  try {
+    var 候选们 = (最新 && 最新.待命名 && 最新.待命名.命名候选) || []
+    if (!候选们.length) return
+    var fig = 盒.querySelector('.ep-candbox')
+    if (!fig) {
+      fig = document.createElement('div')
+      fig.className = 'ep-candbox'
+      fig.style.marginTop = '8px'
+      盒.appendChild(fig)
+    }
+    var h = '<div class="ep-none">模型想叫它（未收录，待你定）：</div>'
+    for (var i = 0; i < 候选们.length; i++) {
+      var c = 候选们[i]
+      h += '<div class="ep-cd"><span class="ep-cn">' + 转义(c.名字) + '<em class="ep-seg">自报建议</em></span><span class="ep-seg">' + 转义(c.时间 || '') + '</span></div>'
+    }
+    fig.innerHTML = h
+  } catch (e) {}
+}
+
 function 画待确认(强制) {
   var 头 = 卡.querySelector('#tplhead'), 盒 = 卡.querySelector('#cands'), 折 = 卡.querySelector('#tplfold'), 模 = 卡.querySelector('#tpls')
   if (!头 || !盒) return
@@ -1661,6 +1688,7 @@ function 画待确认(强制) {
         }
         盒.innerHTML = h
       }
+      候选补(盒)
       折.querySelector('.ep-tpln').textContent = String(模s.length)
       if (!模s.length) { 模.innerHTML = '<div class="ep-none">还没有模板</div>'; return }
       var t = ''
@@ -1946,7 +1974,7 @@ function 载设置() {
       if (x.码 !== 200 || !x.o || !x.o.组) throw new Error((x.o && (x.o.error || x.o.错误)) || ('HTTP ' + x.码))
       设置数据 = x.o.组
       var 有会话名 = 设置数据.some(function (z) { return z.键 === '会话名' })
-      if (!有会话名) 设置数据 = 设置数据.concat([{ 键: '会话名', 名: '会话名', 说明: '会话短号 → 显示名（卡片用，可改）', 类型: '对象', 值: { 'bbbbbbbb': '助手聊天间3', 'cccccccc': '策划间', 'dddddddd': '助手工作间' }, 范围: null }])
+      if (!有会话名) 设置数据 = 设置数据.concat([{ 键: '会话名', 名: '会话名', 说明: '会话短号 → 显示名（卡片用，可改）', 类型: '对象', 值: { '8f689553': '小汐聊天间3', '6a169bce': '策划间', '3be73c36': '小汐工作间' }, 范围: null }])
       try {
         var 名项 = 设置数据.filter(function (z) { return z.键 === '会话名' })[0]
         var 名值 = 名项 && 名项.值
@@ -1979,7 +2007,7 @@ function 载设置() {
             '<div class="ep-names" style="display:none"></div></div>' }
         if (名 === '说明书') {
           var 项路 = 设置数据.filter(function (z) { return z.键 === '说明书路径' })[0]
-          var 路 = (项路 && 项路.值) || join(homedir(), '.whale-home', 'notes', '情绪池-模型说明书.md')
+          var 路 = (项路 && 项路.值) || 'E:\\whale-home\\notes\\情绪池-模型说明书.md'
           内容 = '<div class="ep-srow"><span class="ep-sname">文件</span><span class="ep-sval">' + 转义(路) + '（只读，路径在「界面」组改）</span></div>' +
             '<div class="ep-srow"><span class="ep-sname">打开</span><span class="ep-sctl"><button type="button" class="ep-act" data-openmanual="1">打开说明书</button></span><span class="ep-smsg"></span></div>' +
             '<div class="ep-srow"><span class="ep-sname">接口</span><span class="ep-sval">GET /dsh-emotion-pool/manual?sec=0…9</span></div>' +
@@ -2041,7 +2069,7 @@ function 载设置() {
           '<div class="ep-gh"><span class="ep-garrow">▶</span><span>' + 转义(名) + '</span></div>' +
           '<div class="ep-gb">' + 内容 + '</div></div>'
       }
-      盒.innerHTML = '<div class="ep-pname">ESP 情绪插件 · v' + 转义(String(x.o.版本 || '0.2.0-dev')) + '</div>' + '<div class="ep-srow ep-gray"><span class="ep-sname">打点模型</span><span class="ep-sval">' + 转义(模文) + '（只读）</span><span class="ep-sctl"></span><span class="ep-smsg"></span></div>' + html组
+      盒.innerHTML = '<div class="ep-pname">鲸汐ESP情绪插件 · v' + 转义(String(x.o.版本 || '0.2.0-dev')) + '</div>' + '<div class="ep-srow ep-gray"><span class="ep-sname">打点模型</span><span class="ep-sval">' + 转义(模文) + '（只读）</span><span class="ep-sctl"></span><span class="ep-smsg"></span></div>' + html组
       绑高级(盒)
       绑池(盒)
       绑分享(盒)
@@ -2240,6 +2268,7 @@ function 提交设置(项, 行, 原值, 控件) {
         (e.为谁 ? '<span class="ep-ev-who">' + 转义(e.为谁) + '</span>' : '') +
         '<span class="ep-ev-d">' + 差.join('　') + '</span>' +
         '<span class="ep-ev-why">' + 因2 + '</span>' +
+        (e.状态 ? '<span class="ep-st ep-st-' + 转义(e.状态) + '">' + 转义(e.状态) + '</span>' : '') +
         '<span class="ep-ev-src">' + 转义(源) + '</span>' +
         (原话 ? '<div class="ep-ev-q">' + 转义(原话) + '</div>' : '') +
         '</div>'
@@ -2485,7 +2514,7 @@ function 画轨迹(s) {
         if (!列表会话 || !会话表.some(function (x) { return x && x.值 === 列表会话 })) 列表会话 = 会话表[0] ? 会话表[0].值 : ''
         画会话签()
         名字.textContent = s.命名 || '—'
-        名字.title = 'ESP 情绪插件' + (s.命名 ? ('\n' + s.命名 + (s.命名注 ? '\n' + s.命名注 : '')) : '\n还没有命中名字')
+        名字.title = '鲸汐ESP情绪插件' + (s.命名 ? ('\n' + s.命名 + (s.命名注 ? '\n' + s.命名注 : '')) : '\n还没有命中名字')
         if (页 === 0) 画组(s)
         if (调) 测段('画SVG')
         if (空) {

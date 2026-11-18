@@ -8,7 +8,7 @@ import { join } from 'node:path'
 const 目录 = mkdtempSync(join(tmpdir(), '情绪池-m124-'))
 process.env.EMOTION_POOL_DIR = 目录
 const I = await import('../lib/index.js')
-const 会话 = 'session-bbbbbbbb-aaaa-bbbb-cccc-ddddeeeeffff'
+const 会话 = 'session-8f689553-aaaa-bbbb-cccc-ddddeeeeffff'
 
 test('推轴两次：事件从 0 变 2，类型/来源/Δ 都在，快照轴不受事件影响', () => {
   writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 刻度: 1 }, null, 2), 'utf8')

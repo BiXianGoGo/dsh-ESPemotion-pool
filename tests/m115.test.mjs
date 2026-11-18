@@ -9,7 +9,7 @@ const 目录 = mkdtempSync(join(tmpdir(), '情绪池-m115-'))
 process.env.EMOTION_POOL_DIR = 目录
 process.env.EP_LEGACY_INJECT = '1' // 旧【此刻】格式的回归用例
 const M = await import('../lib/index.js')
-const 配置 = { 启用: true, 写入者: ['aaaaaaaa'], 注入启用: false, 校验启用: false, 双轨校验: false, 刻度: 100, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
+const 配置 = { 启用: true, 写入者: ['c4b92d68'], 注入启用: false, 校验启用: false, 双轨校验: false, 刻度: 100, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
 const 天前 = (n) => new Date(Date.now() - n * 86400000).toISOString()
 function 写池(o = {}) {
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify({ rev: 1, updated: 天前(0), axes: { E: 0, S: 0, P: 0 }, spine: { S: 0 }, events: [], stats: {}, ...o }, null, 2))

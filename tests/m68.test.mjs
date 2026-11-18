@@ -1,4 +1,4 @@
-import test from 'node:test'
+﻿import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -7,8 +7,8 @@ const 源 = readFileSync(join(process.cwd(), 'lib', 'index.js'), 'utf8')
 const 前端 = readFileSync(join(process.cwd(), 'assets', 'widget.js'), 'utf8')
 
 test('B：默认配置两组', () => {
-  assert.ok(源.includes("名: '默认池', 会话: ['aaaaaaaa']"))
-  assert.ok(源.includes("名: '测试池', 会话: ['cccccccc']"))
+  assert.ok(源.includes("名: '常用聊天组', 会话: ['c4b92d68']"))
+  assert.ok(源.includes("名: '测试组', 会话: ['6a169bce']"))
 })
 
 test('B：组轴值 = 组内快照和 + spine，不混其他组', () => {

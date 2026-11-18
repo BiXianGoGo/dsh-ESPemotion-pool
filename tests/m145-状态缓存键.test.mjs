@@ -4,16 +4,16 @@ import { readFileSync } from 'node:fs'
 import { 状态键 } from '../lib/index.js'
 
 test('m145 状态键：同 rev/装载/mtime 下不同池 → 键不同（2 秒缓存不串池）', () => {
-  const 甲 = 状态键(7, '常用聊天组', ['bbbbbbbb'], 1700000000000, '常用聊天组')
-  const 乙 = 状态键(7, '测试组', ['bbbbbbbb'], 1700000000000, '测试组')
+  const 甲 = 状态键(7, '常用聊天组', ['8f689553'], 1700000000000, '常用聊天组')
+  const 乙 = 状态键(7, '测试组', ['8f689553'], 1700000000000, '测试组')
   assert.notEqual(甲, 乙)
   assert.ok(甲.includes('pool:常用聊天组'))
   assert.ok(乙.includes('pool:测试组'))
 })
 
 test('m145 状态键：同一池同一 rev 稳定（缓存仍能命中）', () => {
-  const a = 状态键(7, '测试组', ['bbbbbbbb'], 1700000000000, '测试组')
-  const b = 状态键(7, '测试组', ['bbbbbbbb'], 1700000000000, '测试组')
+  const a = 状态键(7, '测试组', ['8f689553'], 1700000000000, '测试组')
+  const b = 状态键(7, '测试组', ['8f689553'], 1700000000000, '测试组')
   assert.equal(a, b)
 })
 

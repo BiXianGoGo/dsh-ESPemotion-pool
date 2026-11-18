@@ -18,7 +18,7 @@ const 配置 = {
   提醒启用: false,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   刺阈值: 0.25,
@@ -28,7 +28,7 @@ const 配置 = {
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 
-const 会话id = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话id = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 起插件(事件 = [], 刺 = []) {
   const 池 = {
@@ -101,7 +101,7 @@ test('第三次 0.15：累计 0.45 刚好成结，值 0', async () => {
 
 test('急通道：单条 0.30、距上条 5 分钟（速率 0.06）→ 结 0.10', async () => {
   const 五分钟前 = new Date(Date.now() - 5 * 60000).toISOString()
-  const 起 = 起插件([{ id: 'e-0001', t: 五分钟前, delta_raw: { E: 0, S: 0, P: 0 }, note: '旧事', sid: 'aaaaaaaa', turn: 'old' }])
+  const 起 = 起插件([{ id: 'e-0001', t: 五分钟前, delta_raw: { E: 0, S: 0, P: 0 }, note: '旧事', sid: 'c4b92d68', turn: 'old' }])
   await 报(起.路由, { E: 0.30, 轮: 'r1', 注: '一下砸过来' })
   const 刺 = 起.池().结
   assert.equal(刺.length, 1)

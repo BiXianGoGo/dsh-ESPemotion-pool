@@ -11,11 +11,11 @@ const 模 = await import('../lib/index.js')
 
 const 配置 = {
   启用: true, 校验启用: false, 校验每天上限: 50, 校验只跑有自报的轮: true, 提醒启用: false,
-  每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['aaaaaaaa'], 注入启用: false, 刺阈值: 0.25,
+  每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['c4b92d68'], 注入启用: false, 刺阈值: 0.25,
   结累计阈值: 0.45, 结急阈值: 0.2, 结急速率: 0.05, 双轨校验: false,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'], 刻度: 10,
 }
-const 会话 = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话 = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 起() {
   const p = {
@@ -23,7 +23,7 @@ function 起() {
     spine: { E: 0, S: 0, P: 0 }, overflow: { E: 0, S: 0, P: 0 }, prev_cell: 'E0S0P0',
     events: [], 结: [], stats: { selfreport_total: 0, missed_total: 0 },
     p_state: { 爽: { s: 1, a: 1, 最近: null }, 痛: { s: 1, a: 1, 最近: null } },
-    streak: { aaaaaaaa: { E: { n: 0, dir: 0, t: 0 }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } },
+    streak: { c4b92d68: { E: { n: 0, dir: 0, t: 0 }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } },
   }
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify(p, null, 2))
   writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify(配置, null, 2))
@@ -77,7 +77,7 @@ test('/v1/report：带 来源 与聊天间会话，事件里记 来源', async (
 
 test('/v1/report：非聊天间来源 → 403，日志记 外部写入被拒', async () => {
   const { 路由 } = 起()
-  const r = await 请求(路由, '/dsh-emotion-pool/v1/report', { E: 1, S: 0, P: 0, 来源: 'someone', 会话: 'session-dddddddd-aaaa' })
+  const r = await 请求(路由, '/dsh-emotion-pool/v1/report', { E: 1, S: 0, P: 0, 来源: 'someone', 会话: 'session-3be73c36-aaaa' })
   assert.equal(r.码, 403)
   assert.equal(r.体.ok, false)
   const 日志 = readFileSync(join(目录, '情绪池-日志.md'), 'utf8')
@@ -97,7 +97,7 @@ test('/v1/schema：能 JSON.parse，含关键字段；/v1/stream 首帧是 state
   assert.equal(sc.码, 200)
   const 模版 = await import('../lib/index.js')
   assert.equal(typeof 模版.现值, 'function')
-  assert.equal(sc.体.title, 'ESP /v1/state')
+  assert.equal(sc.体.title, '鲸汐ESP /v1/state')
   assert.ok(sc.体.properties.axes)
   assert.ok(sc.体.properties.结)
   assert.ok(sc.体.properties.双轨)

@@ -11,7 +11,7 @@ mkdirSync(join(根, '情绪池', '池'), { recursive: true })
 process.env.EMOTION_POOL_DIR = 根
 const 写配 = (o) => writeFileSync(join(根, '情绪池配置.json'), JSON.stringify(o, null, 2))
 const 读配 = () => JSON.parse(readFileSync(join(根, '情绪池配置.json'), 'utf8'))
-写配({ 组: [{ 名: '测试组', 会话: ['cccccccc'] }] })
+写配({ 组: [{ 名: '测试组', 会话: ['6a169bce'] }] })
 const 模 = await import(pathToFileURL(join(process.cwd(), 'lib', 'index.js')).href)
 
 test('新建池：写初始化池文件（axes 0、快照启用 false、当前快照有 t）', () => {
@@ -40,7 +40,7 @@ test('池化后的池（带迁移标记）即使有事件也不许重放', () =>
     spine: {},
     会话快照: {},
     快照启用: false,
-    events: [{ t: new Date().toISOString(), sid: 'cccccccc', delta_raw: { E: 0.5, S: 0.5, P: 0.5 } }],
+    events: [{ t: new Date().toISOString(), sid: '6a169bce', delta_raw: { E: 0.5, S: 0.5, P: 0.5 } }],
     零点: { E: 0, S: 0, P: 0 },
   }
   const v = 模.展示现值(池)

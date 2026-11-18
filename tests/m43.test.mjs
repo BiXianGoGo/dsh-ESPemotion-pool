@@ -10,10 +10,10 @@ process.env.EMOTION_POOL_DIR = 目录
 const 模 = await import('../lib/index.js')
 const 双 = await import('../lib/dual.js')
 
-const 会话 = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话 = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 const 配置 = {
   启用: true, 校验启用: false, 双轨重做: true, 双轨阈值: 0.15, 分身每批: 300,
-  提醒启用: true, 守恒上限: 1, 写入者: ['aaaaaaaa'], 注入启用: false, 刻度: 1,
+  提醒启用: true, 守恒上限: 1, 写入者: ['c4b92d68'], 注入启用: false, 刻度: 1,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 
@@ -22,7 +22,7 @@ function 轮(n, 被否 = false) {
 }
 // 让「它」5 轮全被否 → 它 K=0.5；我 K=1.0，裁决时我会赢
 function 种它被否() {
-  return { K: {}, 旧K: null, 最近: null, 信誉: { aaaaaaaa: { 我: { 轮: 轮(5), 被否: 0, 值: 1, 样本: 0, q: [] }, 它: { 轮: 轮(5, true), 被否: 0, 值: 1, 样本: 0, q: [] } } } }
+  return { K: {}, 旧K: null, 最近: null, 信誉: { c4b92d68: { 我: { 轮: 轮(5), 被否: 0, 值: 1, 样本: 0, q: [] }, 它: { 轮: 轮(5, true), 被否: 0, 值: 1, 样本: 0, q: [] } } } }
 }
 function 重置(双轨 = null) {
   try { rmSync(join(目录, '情绪池.json.lock')) } catch {}
@@ -56,7 +56,7 @@ test('错判：两轨都有点数 + 超区间 + 采用我 → 错判 +1、该轮
   const 解 = 自报('E+9 S0 P0 | q1=1 q2=1')
   await 模.跑本轮(造ctx({ E: 1, S: 0, P: 0, q1: 0.5, q2: 0.5 }), 真, 会话, 1, '回复'.repeat(400), 解, '他说累')
   const p = 池()
-  const 项 = p.双轨.K['aaaaaaaa']
+  const 项 = p.双轨.K['c4b92d68']
   assert.equal(项.错判, 1)
   assert.equal(项.轮.at(-1).错判, true)
   assert.equal(项.轮.at(-1).采用, undefined) // 轮里不塞观测
@@ -68,7 +68,7 @@ test('采用中点：不记错判', async () => {
   重置()
   const 解 = 自报('E+1 S0 P0 | q1=1 q2=1')
   await 模.跑本轮(造ctx({ E: 1, S: 0, P: 0, q1: 0.5, q2: 0.5 }), 真, 会话, 1, '回复'.repeat(400), 解, '他说累')
-  const 项 = 池().双轨.K['aaaaaaaa']
+  const 项 = 池().双轨.K['c4b92d68']
   assert.equal(项.错判 || 0, 0)
   assert.equal(项.轮.at(-1).错判, false)
 })
@@ -78,7 +78,7 @@ test('单轨：不记错判', async () => {
   const 解 = 自报('E+9 S0 P0 | q1=1 q2=1')
   const ctx = { llm: { async *stream() { throw new Error('boom') } }, agents: { list: () => [] } }
   await 模.跑本轮(ctx, 真, 会话, 1, '回复'.repeat(400), 解, '他说累')
-  const 项 = 池().双轨.K['aaaaaaaa']
+  const 项 = 池().双轨.K['c4b92d68']
   assert.equal(项.错判 || 0, 0)
   assert.equal(项.轮.at(-1).错判, false)
 })
@@ -100,7 +100,7 @@ test('K 窗口：写第 21 轮后轮长 20、最老的掉出', async () => {
   for (let i = 1; i <= 21; i++) {
     await 模.跑本轮(造ctx({ E: 1, S: 0, P: 0, q1: 1, q2: 1 }), 真, 会话, i, ('回复' + i).repeat(120), 自报('E+1 S0 P0 | q1=1 q2=1'), '他说累')
   }
-  const 项 = 池().双轨.K['aaaaaaaa']
+  const 项 = 池().双轨.K['c4b92d68']
   assert.equal(项.轮.length, 20)
 })
 
@@ -109,7 +109,7 @@ test('写入即重算：项.值 === 算K(项.轮).K，且样本/一致率已写�
   for (let i = 1; i <= 6; i++) {
     await 模.跑本轮(造ctx({ E: 1, S: 0, P: 0, q1: 1, q2: 1 }), 真, 会话, i, ('回复' + i).repeat(120), 自报('E+1 S0 P0 | q1=1 q2=1'), '他说累')
   }
-  const 项 = 池().双轨.K['aaaaaaaa']
+  const 项 = 池().双轨.K['c4b92d68']
   const kk = 双.算K(项.轮)
   assert.equal(项.值, kk.K)
   assert.equal(项.样本, kk.样本)

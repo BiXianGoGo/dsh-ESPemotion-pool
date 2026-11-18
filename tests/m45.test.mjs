@@ -1,4 +1,4 @@
-// v0.12：注入的「距 5 轮」改用真实回复计数
+﻿// v0.12：注入的「距 5 轮」改用真实回复计数
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs'
@@ -11,7 +11,7 @@ process.env.EP_LEGACY_INJECT = '1' // 旧【此刻】格式的回归用例
 const 模块 = await import('../lib/index.js')
 
 const 配置 = {
-  启用: true, 注入启用: true, 注入日限: 12, 保底间隔分钟: 40, 保底轮数: 5, 刻度: 1, 守恒上限: 1, 写入者: ['aaaaaaaa'], 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
+  启用: true, 注入启用: true, 注入日限: 12, 保底间隔分钟: 40, 保底轮数: 5, 刻度: 1, 守恒上限: 1, 写入者: ['c4b92d68'], 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
 const 池 = (事件们 = []) => ({ rev: 1, updated: '2026-11-11T00:00:00+08:00', axes: { E: 0.2, S: 0, P: 0 }, spine: { S: 0 }, prev_cell: 'E+S0P0', events: 事件们, stats: { selfreport_total: 0, missed_total: 0 } })
 const 事件 = (turn, t = '2026-11-11T00:00:00+08:00') => ({ id: 'e' + turn, t, turn, delta_raw: { E: 0.1, S: 0, P: 0 }, note: '' })
 
@@ -38,7 +38,7 @@ function 起插件() {
   模块.apply(ctx)
   return {
     注入() { const c = 出口.get('emotion-pool-注入'); return c ? c.text() : '' },
-    发(类型, 数据) { 事件处理({ id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }, { type: 类型, data: 数据 }) },
+    发(类型, 数据) { 事件处理({ id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }, { type: 类型, data: 数据 }) },
     状态: async () => {
       const h = 路由.get('/dsh-emotion-pool/state')
       let 文 = ''
@@ -52,23 +52,23 @@ function 起插件() {
 test('记一轮：首次用 max(事件最大 turn, 上次轮) 做种子，且同轮不重复', () => {
   重置([事件(12)], { 今天: '', 上次轮: 20, 判断: 0, 注入: 0, 保底: 0, 插队: 0, 次数: 0, 昨日: {}, 上次轴: {}, 上次时间: null, 上次格: '', 上次rev: null })
   const 池对象 = JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
-  模块.记一轮('session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b', 7, 池对象)
+  模块.记一轮('session-c4b92d68-f40c-4fc3-ad69-f8338376753b', 7, 池对象)
   assert.equal(JSON.parse(readFileSync(join(目录, '情绪池-轮号.json'), 'utf8')).总, 21)
-  assert.equal(JSON.parse(readFileSync(join(目录, '情绪池-轮号.json'), 'utf8')).按会话.aaaaaaaa, 1)
-  模块.记一轮('session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b', 7, 池对象)
+  assert.equal(JSON.parse(readFileSync(join(目录, '情绪池-轮号.json'), 'utf8')).按会话.c4b92d68, 1)
+  模块.记一轮('session-c4b92d68-f40c-4fc3-ad69-f8338376753b', 7, 池对象)
   assert.equal(JSON.parse(readFileSync(join(目录, '情绪池-轮号.json'), 'utf8')).总, 21)
 })
 
 test('当前轮：优先读 轮.总，不再只认事件表最大 turn', () => {
   重置([事件(3)], { 今天: '', 上次轮: null, 判断: 0, 注入: 0, 保底: 0, 插队: 0, 次数: 0, 昨日: {}, 上次轴: {}, 上次时间: null, 上次格: '', 上次rev: null })
   const 池对象 = JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
-  for (let i = 1; i <= 6; i++) 模块.记一轮('session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b', i, 池对象)
+  for (let i = 1; i <= 6; i++) 模块.记一轮('session-c4b92d68-f40c-4fc3-ad69-f8338376753b', i, 池对象)
   // 种子取事件最大 3，再记 6 轮 → 9（说明读的是计数、不只是事件表）\n  assert.equal(模块.当前轮(池对象), 9)\n  assert.ok(9 > 3)
 })
 
 test('6 条不带自报的 assistant/message 之后，注入是保底而不是空', () => {
   重置([事件(1)], { 今天: '', 上次轮: 1, 判断: 0, 注入: 0, 保底: 0, 插队: 0, 次数: 0, 昨日: {}, 上次轴: { E: 0.2, S: 0, P: 0 }, 上次时间: new Date(Date.now() - 60000).toISOString(), 上次格: 'E+S0P0', 上次rev: 1 })
-  模块.记一轮('session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b', 1, { events: [] })
+  模块.记一轮('session-c4b92d68-f40c-4fc3-ad69-f8338376753b', 1, { events: [] })
   const p = 起插件()
   for (let i = 2; i <= 7; i++) p.发('assistant/message', { turn: i, message: { content: [{ type: 'text', text: '（没有自报的一轮）' }] } })
   const 行 = p.注入()
@@ -85,7 +85,7 @@ test('同一轮 text() 多次只注一次', () => {
 })
 
 test('/state.注入：带 轮总/上次轮，没注入过时 距上次注入分钟 为 null', async () => {
-  重置([事件(1)], { 今天: '', 上次轮: 4, 判断: 0, 注入: 0, 保底: 0, 插队: 0, 次数: 0, 昨日: {}, 上次轴: {}, 上次时间: null, 上次格: '', 上次rev: null, 轮: { 总: 4, 按会话: { aaaaaaaa: 4 }, 末: {} } })
+  重置([事件(1)], { 今天: '', 上次轮: 4, 判断: 0, 注入: 0, 保底: 0, 插队: 0, 次数: 0, 昨日: {}, 上次轴: {}, 上次时间: null, 上次格: '', 上次rev: null, 轮: { 总: 4, 按会话: { c4b92d68: 4 }, 末: {} } })
   const p = 起插件()
   const s = await p.状态()
   assert.equal(s.注入.轮总, 4)

@@ -11,7 +11,7 @@ const 模 = await import('../lib/index.js')
 
 const 配置 = {
   启用: true, 校验启用: false, 校验每天上限: 50, 校验只跑有自报的轮: true, 提醒启用: false,
-  每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['aaaaaaaa'], 注入启用: false, 刺阈值: 0.25,
+  每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['c4b92d68'], 注入启用: false, 刺阈值: 0.25,
   双轨校验: true, 一致阈值: 0.1, 报警阈值: 0.4, 报警冷却小时: 24,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
@@ -68,7 +68,7 @@ test('归档：作废结 + 7 天前事件挪进归档 jsonl，池清空对应项
 
 test('双轨：回忆=true 给该轮事件盖回忆/档位', async () => {
   const 轮 = 77
-  const sid = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+  const sid = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
   const e = { t: new Date().toISOString(), delta_raw: { E: 0.15, S: -0.15, P: 0 }, note: '[他说累] 陪他', sid, turn: 轮 }
   重置({ ...空池(), events: [e] })
   const ctx = {

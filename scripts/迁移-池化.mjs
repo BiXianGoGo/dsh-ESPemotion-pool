@@ -1,12 +1,12 @@
 // 0.2.5 池化迁移：组 → 池
 // 用法：node scripts\迁移-池化.mjs --dry|--apply|--verify
-// 根目录默认 %USERPROFILE%\.whale-home\memory\情绪池，可用 EMOTION_POOL_DIR 覆盖。
+// 根目录默认 E:\whale-home\memory\情绪池，可用 EMOTION_POOL_DIR 覆盖（副本用）。
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { 记六头 } from '../lib/v06.js'
 import { 算K } from '../lib/dual.js'
 
-const 根 = process.env.EMOTION_POOL_DIR || '~/.whale-home\\memory\\情绪池'
+const 根 = process.env.EMOTION_POOL_DIR || 'E:\\whale-home\\memory\\情绪池'
 const 组路径 = join(dirname(根), '情绪池配置.json')
 const 总路径 = join(根, '总.json')
 const 会话目录 = join(根, '会话')
@@ -186,7 +186,7 @@ if (模式 === 'apply') {
     事件: 表.reduce((a, t) => a + t.事件们.length, 0),
   })
   const 新总 = { ...总, axes: { E: 0, S: 0, P: 0 }, spine: { E: 0, S: 0, P: 0 }, p_state: {}, 六头: {}, 零点: {}, 组六头: {}, 已迁移到池: true }
-  // K：只移走已归池会话的记录；不在池里的旧记录（如 aaaaaaaa）保留在总表
+  // K：只移走已归池会话的记录；不在池里的旧记录（如 c4b92d68）保留在总表
   if (新总.双轨 && 新总.双轨.K) {
     const 归池短 = new Set(表.flatMap((t) => t.会话))
     for (const k of Object.keys(新总.双轨.K)) {

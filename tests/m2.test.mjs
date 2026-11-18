@@ -20,7 +20,7 @@ const 配置 = {  启用: true,
   校验只跑有自报的轮: true,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa', 'dddddddd'],
+  写入者: ['c4b92d68', '3be73c36'],
   注入启用: false,
   刻度: 1,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
@@ -60,8 +60,8 @@ function 重置() {
 
 const 池 = () => JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
 const 日志 = () => readFileSync(join(目录, '情绪池-日志.md'), 'utf8')
-const 会话 = { id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }
-const 另一会 = { id: 'session-dddddddd-0c89-438e-aa4e-aeaeb3d9c240' }
+const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
+const 另一会 = { id: 'session-3be73c36-0c89-438e-aa4e-aeaeb3d9c240' }
 const 用户 = (文字) => ({ type: 'user/message', data: { message: { role: 'user', content: [{ type: 'text', text: 文字 }] } } })
 const 回话 = (轮, 文字) => ({ type: 'assistant/message', data: { turn: 轮, step: 1, message: { role: 'assistant', content: [{ type: 'text', text: 文字 }] } } })
 
@@ -168,7 +168,8 @@ test('用例 5：同轮重报以最新为准，不补差、不重扣', () => {
   p.发(回话(1, '我记得那天。\n<!-- EMO: E+ S+ P0 | q1=1 q2=0.5 | 那天 | @上次 -->'))
   const 后 = 池()
   assert.equal(后.events.length, 1, '同轮只留一条：兜底推轴更新自报那条，不新增')
-  assert.equal(后.rev, 3, "写自报 + 兜底推轴各 +1 rev")
+  // 2026-11-18 收尾：首次推轴会按种子落门槛/权重，再 +1 rev（实际 4）
+  assert.equal(后.rev, 4, "写自报 + 兜底推轴 + 种子首落门槛 各 +1 rev")
   assert.ok(Math.abs(后.axes.E - 0.15) < 1e-9, `应以最新为准 0.15，实际 ${后.axes.E}`)
   assert.equal(后.events[0].band, undefined)
   assert.ok(后.events[0].note.includes('他说那天他很难受'), '重报后注记换成最新 user 原文')
@@ -202,7 +203,7 @@ test('用例 8：两个会话同时写，rev 递增、无静默覆盖', async ()
       子.on('exit', (码) => (码 === 0 ? resolve() : reject(new Error('子进程退出 ' + 码))))
     })
 
-  await Promise.all([跑('session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b', 1), 跑('session-dddddddd-0c89-438e-aa4e-aeaeb3d9c240', 2)])
+  await Promise.all([跑('session-c4b92d68-f40c-4fc3-ad69-f8338376753b', 1), 跑('session-3be73c36-0c89-438e-aa4e-aeaeb3d9c240', 2)])
   const 后 = 池()
   assert.equal(后.rev, 2, '两次写都要落，rev 应到 2')
   assert.equal(后.events.length, 2, '两个事件都在')

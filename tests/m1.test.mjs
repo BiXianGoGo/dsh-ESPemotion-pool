@@ -17,7 +17,7 @@ const 配置 = {  启用: true,
   校验只跑有自报的轮: true,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
@@ -42,7 +42,7 @@ function 重置() {
 
 const 池 = () => JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
 const 日志 = () => readFileSync(join(目录, '情绪池-日志.md'), 'utf8')
-const 会话 = { id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }
+const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
 const 用户 = (文字) => ({ type: 'user/message', data: { message: { role: 'user', content: [{ type: 'text', text: 文字 }] } } })
 const 回话 = (轮, 文字) => ({ type: 'assistant/message', data: { turn: 轮, step: 1, message: { role: 'assistant', content: [{ type: 'text', text: 文字 }] } } })
 const 收工 = (轮) => ({ type: 'turn/end', data: { turn: 轮, reason: { kind: 'completed' } } })

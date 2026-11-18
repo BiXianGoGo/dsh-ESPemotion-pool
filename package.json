@@ -1,8 +1,8 @@
 {
   "name": "dsh-emotion-pool",
-  "displayName": "ESP 情绪插件",
-  "description": "ESP 情绪插件：三轴情绪状态 + 思考轨迹波动打点（0.2）",
-  "version": "0.2.5",
+  "displayName": "鲸汐ESP情绪插件",
+  "description": "鲸汐ESP情绪插件：三轴情绪状态 + 思考轨迹波动打点（0.2）",
+  "version": "0.2.7",
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",

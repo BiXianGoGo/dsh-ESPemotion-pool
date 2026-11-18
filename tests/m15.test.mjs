@@ -1,4 +1,4 @@
-// 2026-11-09 01:43：软上限 0.85——写入前按已满度缩增量；刺按 Δ_实 判定；警告线 0.85/0.95
+﻿// 2026-11-09 01:43：软上限 0.85——写入前按已满度缩增量；刺按 Δ_实 判定；警告线 0.85/0.95
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs'
@@ -18,14 +18,14 @@ const 配置 = {
   提醒启用: false,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   刺阈值: 0.25,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 
-const 会话id = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话id = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 起插件(种子) {
   const 池 = {

@@ -12,7 +12,7 @@ const M = await import('../lib/index.js')
 const 源 = readFileSync(new URL('../lib/index.js', import.meta.url), 'utf8')
 const 它点 = (组) => { const 点 = 组[0].点; const 出 = {}; for (const k of ['E','S','P']) { let 和 = 0; for (let i = 1; i < 点.length; i++) 和 += (Number(点[i][k]) || 0) - (Number(点[i-1][k]) || 0); 出[k] = Math.round((和 / (点.length - 1)) / 0.05) } return 出 }
 
-const 配 = { 启用: true, 写入者: ['aaaaaaaa'], 装载会话: ['aaaaaaaa'], 刻度: 1, 一致阈值: 0.15, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
+const 配 = { 启用: true, 写入者: ['c4b92d68'], 装载会话: ['c4b92d68'], 刻度: 1, 一致阈值: 0.15, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
 const 存 = () => {
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify({ rev: 0, axes: { E: 0, S: 0, P: 0 }, spine: { S: 0 }, events: [], stats: {} }))
   writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify(配))
@@ -44,7 +44,7 @@ test('切分段：非法分段（重叠/没覆盖完）回退到几何提示', (
   assert.equal(组[0].起, 1)
 })
 
-test('提示词：分身/双轨都没有计次，分身有「为谁」与用户原话', () => {
+test('提示词：分身/双轨都没有计次，分身有「为谁」与主人原话', () => {
   assert.ok(!源.includes('"计次"'))
   assert.ok(源.includes('为谁'))
   assert.ok(源.includes('索取／要求／占有'))
@@ -54,19 +54,19 @@ test('命名提醒：未命名 + 双轨一致 → 入注入待办 + 候选(源�
   存()
   const 点s = [{ E: 0.1 }, { E: 0.3 }, { E: 0.2 }]
   const 组 = M.切分段(点s, [{ 起: 1, 止: 3, 名: '' }])
-  assert.equal(M.命名提醒记账('aaaaaaaa', 7, 组, {}, 配, 它点(组)), 1)
+  assert.equal(M.命名提醒记账('c4b92d68', 7, 组, {}, 配, 它点(组)), 1)
   const 注 = JSON.parse(readFileSync(join(目录, '情绪池-注入.json'), 'utf8'))
   assert.equal(注.命名.待.length, 1)
   assert.equal(注.命名.待[0].起, 1)
   const 模 = JSON.parse(readFileSync(join(目录, '情绪模板.json'), 'utf8'))
   assert.equal(模.候选.length, 1)
   assert.equal(模.候选[0].源, '分段')
-  assert.equal(M.命名提醒记账('aaaaaaaa', 8, 组, {}, 配, 它点(组)), 0)
+  assert.equal(M.命名提醒记账('c4b92d68', 8, 组, {}, 配, 它点(组)), 0)
 })
 
 test('命名提醒：不一致（偏移超阈）不提醒', () => {
   存()
   const 点s = [{ E: 0.1 }, { E: 0.3 }]
   const 组 = M.切分段(点s, [{ 起: 1, 止: 2, 名: '' }])
-  assert.equal(M.命名提醒记账('aaaaaaaa', 9, 组, {}, 配, { E: 9, S: 0, P: 0 }), 0)
+  assert.equal(M.命名提醒记账('c4b92d68', 9, 组, {}, 配, { E: 9, S: 0, P: 0 }), 0)
 })

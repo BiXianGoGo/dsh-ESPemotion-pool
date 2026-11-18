@@ -1,0 +1,231 @@
+// M3 验收：校验开关、每日上限、OK / 矛盾 / 调用失败、输入去注释、不改数值
+import { test, before } from 'node:test'
+import assert from 'node:assert/strict'
+import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+
+const 目录 = mkdtempSync(join(tmpdir(), '情绪池-m3-'))
+process.env.EMOTION_POOL_DIR = 目录
+
+const 模块 = await import('../lib/index.js')
+
+const 基础配置 = {
+  启用: true,
+  校验启用: true,
+  校验每天上限: 50,
+  校验只跑有自报的轮: true,
+  双轨校验: false,
+  每日衰减系数: 0.9,
+  守恒上限: 1.0,
+  写入者: ['c4b92d68'],
+  注入启用: false,
+  刻度: 1,
+  日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
+}
+
+const 空池 = {
+  rev: 0,
+  updated: '2026-11-08T21:40:00+08:00',
+  axes: { E: 0, S: 0, P: 0 },
+  spine: { S: 0 },
+  prev_cell: 'E0S0P0',
+  events: [],
+  stats: { selfreport_total: 0, missed_total: 0 },
+}
+
+const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
+const 池 = () => JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
+const 日志 = () => readFileSync(join(目录, '情绪池-日志.md'), 'utf8')
+
+function 重置(改 = {}) {
+  writeFileSync(join(目录, '情绪池.json'), JSON.stringify(空池, null, 2))
+  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ ...基础配置, ...改 }, null, 2))
+  for (const f of ['情绪池-日志.md', '情绪池-日志.jsonl', '情绪池-校验计数.json', '情绪池-提醒.json']) {
+    const p = join(目录, f)
+    if (existsSync(p)) rmSync(p)
+  }
+}
+
+// 假 ctx：llm.stream 按 答复 产出；记录调用参数
+function 起插件(答复 = 'OK', opts = {}) {
+  const 监听 = []
+  const 调用 = []
+  const 提示出口 = []
+  const ctx = {
+    on(名, fn) {
+      if (名 === 'session/event') 监听.push(fn)
+    },
+    effect(fn) {
+      fn()
+      return () => {}
+    },
+    webServer: { register: () => () => {} },
+    systemPrompt: {
+      context(参数) {
+        提示出口.push(参数)
+        return () => {}
+      },
+    },
+    llm: {
+      async *stream(参数) {
+        调用.push(参数)
+        if (opts.抛错) throw new Error('boom')
+        if (opts.finishError) {
+          yield { type: 'finish', reason: { kind: 'error', failure: { message: 'upstream 500' } } }
+          return
+        }
+        for (const ch of String(答复)) yield { type: 'text-delta', text: ch }
+        yield { type: 'finish', reason: { kind: 'stop' } }
+      },
+    },
+    agents: { list: () => [{ options: { provider: 'fake', model: 'fake-1' } }] },
+    发(ev) {
+      for (const fn of 监听) fn(会话, ev)
+    },
+  }
+  模块.apply(ctx)
+  return {
+    ...ctx,
+    调用,
+    提醒() {
+      const c = 提示出口.find((x) => x.name === 'emotion-pool-提醒')
+      return c ? c.text() : ''
+    },
+  }
+}
+
+const 用户 = (文字) => ({ type: 'user/message', data: { message: { role: 'user', content: [{ type: 'text', text: 文字 }] } } })
+const 回话 = (轮, 文字) => ({ type: 'assistant/message', data: { turn: 轮, message: { role: 'assistant', content: [{ type: 'text', text: 文字 }] } } })
+const 停 = (毫秒 = 30) => new Promise((r) => setTimeout(r, 毫秒))
+
+before(() => 重置())
+
+test('用例 7：校验答 OK → 日志记校验 OK，池数值不变', async () => {
+  重置()
+  const p = 起插件('OK')
+  p.发(用户('今天有点累'))
+  p.发(回话(1, '那我陪你歇一会。\n<!-- EMO: E- S+ P0 | 有点沉 -->'))
+  await 停()
+  const 后 = 池()
+  assert.equal(后.stats.selfreport_total, 1)
+  assert.ok(日志().includes('校验 OK'))
+  assert.equal(p.调用.length, 1)
+  assert.equal(p.调用[0].temperature, 0)
+  assert.equal(p.调用[0].maxTokens, 40)
+  assert.equal(p.调用[0].system.includes('矛盾'), true)
+  // 输入里的注释已被剥掉
+  const 输入 = p.调用[0].messages[0].content[0].text
+  assert.equal(输入.includes('<!--'), false)
+  assert.ok(输入.includes('自报行'))
+})
+
+test('用例 7b：答矛盾 → 只写日志/记录，不改池子', async () => {
+  重置()
+  const p = 起插件('矛盾: 嘴上说没事但语气很沉')
+  p.发(用户('今天有点累'))
+  p.发(回话(2, '没事，我挺好的。\n<!-- EMO: E+ S- P0 | 平静 -->'))
+  await 停()
+  const 后 = 池()
+  assert.ok(日志().includes('校验 矛盾'))
+  const 记录 = readFileSync(join(目录, '情绪池-日志.jsonl'), 'utf8')
+  assert.ok(记录.includes('"校验":"矛盾"'))
+  // 数值只由自报决定：E+0.15 S−0.15
+  assert.ok(Math.abs(后.axes.E - 0.15) < 1e-9)
+  assert.ok(Math.abs(后.axes.S + 0.15) < 1e-9)
+})
+
+test('校验启用 false → 不调用模型', async () => {
+  重置({ 校验启用: false })
+  const p = 起插件('OK')
+  p.发(用户('在吗'))
+  p.发(回话(3, '在。\n<!-- EMO: E+ S- P0 -->'))
+  await 停()
+  assert.equal(p.调用.length, 0)
+})
+
+test('每日上限到了 → 不再调用', async () => {
+  重置({ 校验每天上限: 1 })
+  const 今 = (() => { const d = new Date(); const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}` })()
+  writeFileSync(join(目录, '情绪池-校验计数.json'), JSON.stringify({ date: 今, count: 1 }))
+  const p = 起插件('OK')
+  p.发(回话(4, '嗯。\n<!-- EMO: E+ S- P0 -->'))
+  await 停()
+  assert.equal(p.调用.length, 0)
+  assert.ok(日志().includes('校验跳过'))
+})
+
+test('调用失败 → 记「校验不可用」，不抛、不影响池子', async () => {
+  重置()
+  const p = 起插件('OK', { 抛错: true })
+  p.发(回话(5, '在。\n<!-- EMO: E+ S- P0 -->'))
+  await 停()
+  assert.equal(池().stats.selfreport_total, 1)
+  assert.ok(日志().includes('校验不可用'))
+})
+
+test('finish error → 记「校验不可用」', async () => {
+  重置()
+  const p = 起插件('OK', { finishError: true })
+  p.发(回话(6, '在。\n<!-- EMO: E+ S- P0 -->'))
+  await 停()
+  assert.ok(日志().includes('校验不可用'))
+})
+
+test('只跑有自报的轮 = true（默认）→ 无自报的轮不调用', async () => {
+  重置()
+  const p = 起插件('OK')
+  p.发(回话(7, '这句没有自报。'))
+  await 停()
+  assert.equal(p.调用.length, 0)
+})
+
+test('只跑有自报的轮 = false → 无自报的轮也调用', async () => {
+  重置({ 校验只跑有自报的轮: false })
+  const p = 起插件('OK')
+  p.发(回话(8, '这句没有自报。'))
+  await 停()
+  assert.equal(p.调用.length, 1)
+  assert.ok(p.调用[0].messages[0].content[0].text.includes('（本轮没有自报）'))
+})
+
+test('矛盾 → 挂待提醒；同一轮不注入，下一轮用户消息之后注入一次', async () => {
+  重置()
+  const p = 起插件('矛盾: 话说得轻快')
+  p.发(用户('今天有点累'))
+  p.发(回话(9, '没事呀，我很好。\n<!-- EMO: E+ S- P0 | 平静 -->'))
+  await 停()
+  // 同一轮里不许把提醒吃掉
+  assert.equal(p.提醒(), '')
+  // 下一轮用户消息打开闸
+  p.发(用户('真的吗'))
+  const 行 = p.提醒()
+  assert.ok(行.includes('【自查】'))
+  assert.ok(行.includes('E+ S- P0'))
+  assert.ok(行.includes('话说得轻快'))
+  // 同一条只给一次
+  assert.equal(p.提醒(), '')
+})
+
+test('提醒启用 false → 有矛盾也不注入', async () => {
+  重置({ 提醒启用: false })
+  const p = 起插件('矛盾: 对不上')
+  p.发(回话(10, '在。\n<!-- EMO: E+ S- P0 -->'))
+  await 停()
+  p.发(用户('嗯'))
+  assert.equal(p.提醒(), '')
+})
+
+test('一天最多提醒 3 次，第 4 条只记日志', async () => {
+  重置()
+  const 今 = (() => { const d = new Date(); const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}` })()
+  writeFileSync(join(目录, '情绪池-提醒.json'), JSON.stringify({
+    待提醒: { t: '2026-11-08T22:00:00+08:00', 会话: 会话.id, 轮: 1, 自报: 'E+ S- P0', 原因: '对不上' },
+    今天: 今,
+    今日次数: 3,
+  }))
+  const p = 起插件('OK')
+  p.发(用户('在吗'))
+  assert.equal(p.提醒(), '')
+  assert.ok(日志().includes('提醒跳过'))
+})

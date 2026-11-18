@@ -16,7 +16,7 @@ function 起插件() {
     prev_cell: 'E0S0P0', events: [], 结: [], stats: { selfreport_total: 0, missed_total: 0 },
     p_state: { 爽: { s: 1, a: 1, 最近: null }, 痛: { s: 1, a: 1, 最近: null } },
   }, null, 2))
-  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 写入者: ['aaaaaaaa'], 日志: ['情绪池-日志.md'] }, null, 2))
+  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 写入者: ['c4b92d68'], 日志: ['情绪池-日志.md'] }, null, 2))
   const 路由 = new Map()
   const 监听 = new Map()
   const ctx = {

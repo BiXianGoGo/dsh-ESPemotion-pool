@@ -11,7 +11,7 @@ process.env.EMOTION_POOL_DIR = 目录
 const M = await import('../lib/index.js')
 const 源 = readFileSync(new URL('../lib/index.js', import.meta.url), 'utf8')
 const { 同形 } = M
-const 配 = { 启用: true, 写入者: ['aaaaaaaa'], 装载会话: ['aaaaaaaa'], 刻度: 1, 一致阈值: 0.15, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
+const 配 = { 启用: true, 写入者: ['c4b92d68'], 装载会话: ['c4b92d68'], 刻度: 1, 一致阈值: 0.15, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'] }
 const 存 = () => {
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify({ rev: 0, axes: { E: 0, S: 0, P: 0 }, spine: { S: 0 }, events: [], stats: {} }))
   writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify(配))
@@ -30,10 +30,10 @@ const 形 = (n) => [
 test('同形第 3 次升强制，次数字段累加', () => {
   存()
   const 组 = M.切分段(形(1), [{ 起: 1, 止: 3, 名: '' }])
-  M.命名提醒记账('aaaaaaaa', 1, 组, {}, 配, 它点(组))
-  M.命名提醒记账('aaaaaaaa', 2, 组, {}, 配, 它点(组))
+  M.命名提醒记账('c4b92d68', 1, 组, {}, 配, 它点(组))
+  M.命名提醒记账('c4b92d68', 2, 组, {}, 配, 它点(组))
   assert.equal(读注().命名.待.length, 1)
-  M.命名提醒记账('aaaaaaaa', 3, 组, {}, 配, 它点(组))
+  M.命名提醒记账('c4b92d68', 3, 组, {}, 配, 它点(组))
   const 待 = 读注().命名.待
   assert.equal(待.length, 1)
   assert.equal(待[0].强制, true)
@@ -45,7 +45,7 @@ test('同时最多 3 条：按次数排序，第 4 条起排队', () => {
   const pre = { 待: [1, 2, 3, 4].map((n) => ({ 名: '未命名（第' + n + '–' + n + '段）', 注: 'x', 起: n, 止: n, 次: n, 签: null, t: new Date().toISOString() })), 已: [] }
   writeFileSync(join(目录, '情绪池-注入.json'), JSON.stringify({ 命名: pre }))
   const 组 = M.切分段(形(1), [{ 起: 1, 止: 3, 名: '' }])
-  M.命名提醒记账('aaaaaaaa', 30, 组, {}, 配, 它点(组))
+  M.命名提醒记账('c4b92d68', 30, 组, {}, 配, 它点(组))
   const 待 = 读注().命名.待
   assert.ok(待.length >= 4)
   assert.equal(待.filter((x) => !x.排队).length, 3)
@@ -57,7 +57,7 @@ test('同时最多 3 条：按次数排序，第 4 条起排队', () => {
 test('确认/丢弃后清理：待与已都删掉', () => {
   存()
   const 组 = M.切分段(形(2), [{ 起: 1, 止: 3, 名: '' }])
-  M.命名提醒记账('aaaaaaaa', 20, 组, {}, 配, 它点(组))
+  M.命名提醒记账('c4b92d68', 20, 组, {}, 配, 它点(组))
   const 名 = 读注().命名.待[0].名
   M.清理命名提醒(名)
   assert.equal(读注().命名.待.length, 0)

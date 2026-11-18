@@ -20,7 +20,7 @@ function 空池() {
 
 function 起插件(池) {
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify(池 || 空池(), null, 2))
-  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 写入者: ['aaaaaaaa'], 日志: ['情绪池-日志.md'] }, null, 2))
+  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 写入者: ['c4b92d68'], 日志: ['情绪池-日志.md'] }, null, 2))
   const 路由 = new Map()
   const ctx = {
     on() {},

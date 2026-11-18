@@ -19,13 +19,13 @@ const 基础配置 = {
   提醒启用: true,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 
-const 会话 = { id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }
+const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
 const 天前 = (n) => new Date(Date.now() - n * 86400000).toISOString()
 
 function 空池(事件 = []) {

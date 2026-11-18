@@ -1,4 +1,4 @@
-import { test } from 'node:test'
+﻿import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -33,12 +33,12 @@ test('校验：布尔字符串归一；整数必须整数；范围外拒绝；�
 })
 
 test('写设置：保留未知键，只改目标键，缩进 2 空格', () => {
-  写原({ 写入者: ['aaaaaaaa'], 自定义键: { a: 1 }, 默认页: 0 })
+  写原({ 写入者: ['c4b92d68'], 自定义键: { a: 1 }, 默认页: 0 })
   const r = 模.写设置('默认页', 2)
   assert.equal(r.ok, true)
   const 原 = 读原()
   assert.equal(原.默认页, 2)
-  assert.deepEqual(原.写入者, ['aaaaaaaa'])
+  assert.deepEqual(原.写入者, ['c4b92d68'])
   assert.deepEqual(原.自定义键, { a: 1 })
   assert.match(readFileSync(配置路径, 'utf8'), /\n  "默认页": 2/)
 })
@@ -77,13 +77,13 @@ test('卡片源码：第 4 页、设置接口、默认页手翻优先', () => {
   assert.ok(源.includes("method: 'POST'"), '保存走 POST')
 })
 test('写设置：配置带 BOM 也能读，未知键不丢（2026-11-11 事故回归）', () => {
-  const 带BOM = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(JSON.stringify({ 写入者: ['aaaaaaaa'], 恢复备份: true, 默认页: 0 }, null, 2))])
+  const 带BOM = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(JSON.stringify({ 写入者: ['c4b92d68'], 恢复备份: true, 默认页: 0 }, null, 2))])
   writeFileSync(配置路径, 带BOM)
   const r = 模.写设置('默认页', 3)
   assert.equal(r.ok, true)
   const 原 = 读原()
   assert.equal(原.默认页, 3)
-  assert.deepEqual(原.写入者, ['aaaaaaaa'])
+  assert.deepEqual(原.写入者, ['c4b92d68'])
   assert.equal(原.恢复备份, true)
 })
 

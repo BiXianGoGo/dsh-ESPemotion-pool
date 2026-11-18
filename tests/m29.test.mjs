@@ -11,12 +11,12 @@ const 模 = await import('../lib/index.js')
 
 const 配置 = {
   启用: true, 校验启用: false, 校验每天上限: 50, 校验只跑有自报的轮: true, 提醒启用: false,
-  每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['aaaaaaaa'], 注入启用: false, 刺阈值: 0.25,
+  每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['c4b92d68'], 注入启用: false, 刺阈值: 0.25,
   结累计阈值: 0.45, 结急阈值: 0.2, 结急速率: 0.05,
   双轨校验: true, 一致阈值: 0.1, 报警阈值: 0.4, 报警冷却小时: 24,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
-const 会话 = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话 = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 起(池, 事件 = []) {
   const p = {
@@ -24,7 +24,7 @@ function 起(池, 事件 = []) {
     spine: { E: 0, S: 0, P: 0 }, overflow: { E: 0, S: 0, P: 0 }, prev_cell: 'E0S0P0',
     events: 事件, 结: [], stats: { selfreport_total: 0, missed_total: 0 },
     p_state: { 爽: { s: 1, a: 1, 最近: null }, 痛: { s: 1, a: 1, 最近: null } },
-    streak: { aaaaaaaa: { E: { n: 0, dir: 0, t: 0 }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } },
+    streak: { c4b92d68: { E: { n: 0, dir: 0, t: 0 }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } },
     ...池,
   }
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify(p, null, 2))

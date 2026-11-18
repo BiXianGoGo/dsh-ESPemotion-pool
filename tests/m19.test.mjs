@@ -15,13 +15,13 @@ function 空池() {
     rev: 0, updated: new Date().toISOString(), axes: { E: 0, S: 0, P: 0 }, spine: { S: 0 },
     prev_cell: 'E0S0P0', events: [], 结: [], stats: { selfreport_total: 0, missed_total: 0 },
     p_state: { 爽: { s: 1, a: 1, 最近: null }, 痛: { s: 1, a: 1, 最近: null } },
-    streak: { aaaaaaaa: { E: { n: 0, dir: 0, t: 0 }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } },
+    streak: { c4b92d68: { E: { n: 0, dir: 0, t: 0 }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } },
   }
 }
 
 function 起插件(池) {
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify(池 || 空池(), null, 2))
-  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 写入者: ['aaaaaaaa'], 日志: ['情绪池-日志.md'] }, null, 2))
+  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 写入者: ['c4b92d68'], 日志: ['情绪池-日志.md'] }, null, 2))
   const 路由 = new Map()
   const ctx = {
     on() {},
@@ -48,7 +48,7 @@ function 读池() { return JSON.parse(readFileSync(join(目录, '情绪池.json'
 function 写池(池) { writeFileSync(join(目录, '情绪池.json'), JSON.stringify(池, null, 2)) }
 function 搬旧(轴, 分钟) {
   const 池 = 读池()
-  池.streak['aaaaaaaa'][轴].t = Date.now() - 分钟 * 60000
+  池.streak['c4b92d68'][轴].t = Date.now() - 分钟 * 60000
   写池(池)
 }
 const 末次S = () => 读池().events.at(-1).delta_raw.S

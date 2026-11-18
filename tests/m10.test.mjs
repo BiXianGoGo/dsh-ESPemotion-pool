@@ -1,4 +1,4 @@
-// 2026-11-09：桥注入的 user 话不经过 session/event 的 user/message，
+﻿// 2026-11-09：桥注入的 user 话不经过 session/event 的 user/message，
 // 要在 agent/inbox/inserted 上补捕，且来源头（【…】）不算「用户说的话」。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -19,14 +19,14 @@ const 配置 = {
   提醒启用: false,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   刺阈值: 0.25,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 
-const 会话id = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话id = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 空池() {
   return {

@@ -11,7 +11,7 @@ const 模块 = await import('../lib/index.js')
 
 const 配置 = {
   启用: true, 校验启用: false, 校验每天上限: 50, 校验只跑有自报的轮: true,
-  提醒启用: false, 每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['aaaaaaaa'],
+  提醒启用: false, 每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['c4b92d68'],
   注入启用: false, 刻度: 1, 双轨校验: true, 一致阈值: 0.1, 报警阈值: 0.4,
   报警冷却小时: 24, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
@@ -82,7 +82,7 @@ test('双轨分歧：记一行、计数 +1，日志带耗时', async () => {
     },
     agents: { list: () => [{ options: { provider: 'fake', model: 'fake-1' } }] },
   }
-  const 会话 = { id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }
+  const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
   const r = await 模块.跑双轨(ctx, 会话, 1, '我挺开心的'.repeat(60), { E: 0.15, S: 0, P: 0 }, '[他说累] 陪他', '今天有点累')
   assert.equal(r.分歧, true)
   assert.equal(模块.双轨统计().样本, 1)

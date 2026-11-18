@@ -9,7 +9,7 @@ const 目录 = mkdtempSync(join(tmpdir(), '情绪池-m51-'))
 process.env.EMOTION_POOL_DIR = 目录
 const 模块 = await import('../lib/index.js?m51=' + Date.now())
 
-const 配 = (写 = ['aaaaaaaa', 'cccccccc', 'aaaaaaaa', 'bbbbbbbb']) => ({ 启用: true, 写入者: 写, 刻度: 1, 日志: ['情绪池-日志.md'] })
+const 配 = (写 = ['c4b92d68', '6a169bce', 'aaaaaaaa', 'bbbbbbbb']) => ({ 启用: true, 写入者: 写, 刻度: 1, 日志: ['情绪池-日志.md'] })
 
 function 池(额外 = {}) {
   return { rev: 0, updated: new Date().toISOString(), axes: { E: 0, S: 0, P: 0 }, spine: { E: 0, S: 0, P: 0 }, prev_cell: 'E0S0P0', events: [], 结: [], stats: { selfreport_total: 0, missed_total: 0 }, p_state: { 爽: { s: 1, a: 1, 最近: null }, 痛: { s: 1, a: 1, 最近: null } }, ...额外 }
@@ -46,19 +46,19 @@ test('旧结窗/旧 streak 只在读入时归到 写入者[0]，只迁一次', a
   const 现 = new Date().toISOString()
   起(池({ 结窗: { E: { dir: 1, sum: 0.3, t: Date.now() }, S: { dir: 0, sum: 0, t: 0 }, P: { dir: 0, sum: 0, t: 0 } }, streak: { E: { n: 2, dir: 1, t: Date.now() }, S: { n: 0, dir: 0, t: 0 }, P: { n: 0, dir: 0, t: 0 } } }))
   const p1 = 模块.读池()
-  assert.equal(p1.结窗.aaaaaaaa.E.sum, 0.3)
-  assert.equal(p1.streak.aaaaaaaa.E.n, 2)
+  assert.equal(p1.结窗.c4b92d68.E.sum, 0.3)
+  assert.equal(p1.streak.c4b92d68.E.n, 2)
   assert.equal(p1.结窗.E, undefined)
-  assert.ok(读日志().includes('旧结窗已归到 aaaaaaaa'))
+  assert.ok(读日志().includes('旧结窗已归到 c4b92d68'))
   const 前 = (读日志().match(/旧结窗已归到/g) || []).length
   模块.读池()
   const 后 = (读日志().match(/旧结窗已归到/g) || []).length
   assert.equal(后, 前, '第二次读不该再迁一遍')
 })
 
-test('v1/report：写入者名单内的 cccccccc 能写，名单外 403', async () => {
+test('v1/report：写入者名单内的 6a169bce 能写，名单外 403', async () => {
   const 路由 = 起()
-  const 好 = await 发(路由, '/v1/report', { E: 0.15, S: 0, P: 0, 轮: 'x1', 来源: 'probe', 会话: 'session-cccccccc-7cd3-44e9-9c9a-abae7c728005' })
+  const 好 = await 发(路由, '/v1/report', { E: 0.15, S: 0, P: 0, 轮: 'x1', 来源: 'probe', 会话: 'session-6a169bce-7cd3-44e9-9c9a-abae7c728005' })
   assert.equal(好.码, 200)
   const 坏 = await 发(路由, '/v1/report', { E: 0.15, S: 0, P: 0, 轮: 'x2', 来源: 'probe', 会话: 'session-zzzz-0000' })
   assert.equal(坏.码, 403)
@@ -67,7 +67,7 @@ test('v1/report：写入者名单内的 cccccccc 能写，名单外 403', async 
 
 test('v1/report：写入者名单为空 → 403', async () => {
   const 路由 = 起(池(), 配([]))
-  const r = await 发(路由, '/v1/report', { E: 0.15, S: 0, P: 0, 轮: 'y1', 来源: 'probe', 会话: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' })
+  const r = await 发(路由, '/v1/report', { E: 0.15, S: 0, P: 0, 轮: 'y1', 来源: 'probe', 会话: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' })
   assert.equal(r.码, 403)
 })
 
@@ -87,7 +87,7 @@ test('池.刺 → 结：读入迁移、旧键消失、/state.刺 同值别名', 
 })
 
 test('现值(池) 单参：与旧两参行为一致', () => {
-  const p = 池({ events: [{ t: new Date().toISOString(), delta_raw: { E: 0.2, S: -0.1, P: 0 }, note: 'x', sid: 'aaaaaaaa', turn: '1' }], 快照启用: false })
+  const p = 池({ events: [{ t: new Date().toISOString(), delta_raw: { E: 0.2, S: -0.1, P: 0 }, note: 'x', sid: 'c4b92d68', turn: '1' }], 快照启用: false })
   const a = 模块.现值(p)
   const b = 模块.现值(p, 1.0)
   assert.deepEqual(a.轴, b.轴)

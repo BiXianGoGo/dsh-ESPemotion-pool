@@ -11,12 +11,12 @@ const 模块 = await import('../lib/index.js')
 
 const 配置 = {
   启用: true, 校验启用: false, 校验每天上限: 50, 校验只跑有自报的轮: true,
-  提醒启用: false, 每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['aaaaaaaa'],
+  提醒启用: false, 每日衰减系数: 0.9, 守恒上限: 1.0, 写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1, 刺阈值: 0.25, 结累计阈值: 0.45, 结急阈值: 0.2, 结急速率: 0.05,
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
-const 会话id = 'session-aaaaaaaa'
+const 会话id = 'session-c4b92d68'
 const t0 = Date.now()
 
 function 起(now) {

@@ -10,10 +10,10 @@ process.env.EMOTION_POOL_DIR = 目录
 const S = await import('../lib/store.js')
 const I = await import('../lib/index.js')
 
-const 短A = 'aaaaaaaa'
-const 短B = 'cccccccc'
-const 会话A = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
-const 会话B = 'session-cccccccc-7cd3-44e9-9c9a-abae7c728005'
+const 短A = 'c4b92d68'
+const 短B = '6a169bce'
+const 会话A = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
+const 会话B = 'session-6a169bce-7cd3-44e9-9c9a-abae7c728005'
 
 function 清() { S.清缓存() }
 
@@ -145,7 +145,7 @@ test('坏文件不拖垮读全部：其它本仍返回', () => {
   S.准备目录(); 清()
   S.写会话(短A, { sid: 会话A, rev: 1, 事件: [], 结: [], 快照: {} })
   S.写会话(短B, { sid: 会话B, rev: 1, 事件: [], 结: [], 快照: {} })
-  writeFileSync(join(S.会话目录, 'zzzzzzzz.json'), 'not json', 'utf8')
+  writeFileSync(join(S.会话目录, 'cccccccc.json'), 'not json', 'utf8')
   清()
   const 全 = S.读全部()
   assert.equal(Object.keys(全).length, 2)

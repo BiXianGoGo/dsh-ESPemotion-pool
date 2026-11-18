@@ -6,9 +6,9 @@ import { readFileSync } from 'node:fs'
 const 源 = readFileSync(new URL('../lib/index.js', import.meta.url), 'utf8')
 const 包 = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
 
-test('版本：lib 与 package.json 都是 0.2.5', () => {
-  assert.ok(源.includes("export const 版本 = '0.2.5'"))
-  assert.equal(包.version, '0.2.5')
+test('版本：lib 与 package.json 都是 0.2.7', () => {
+  assert.ok(源.includes("export const 版本 = '0.2.7'"))
+  assert.equal(包.version, '0.2.7')
 })
 
 test('/state 缓存：键含 池 rev、当前池名、pool 参数、装载会话、配置 mtime', () => {

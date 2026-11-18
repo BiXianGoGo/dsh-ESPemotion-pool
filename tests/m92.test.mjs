@@ -8,7 +8,7 @@ import { join } from 'node:path'
 const 目录 = mkdtempSync(join(tmpdir(), '情绪池-m92-'))
 process.env.EMOTION_POOL_DIR = 目录
 const 模 = await import('../lib/index.js')
-const 会话 = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话 = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 const 今 = new Date().toISOString().slice(0, 10)
 
 function 起(补 = {}) {
@@ -18,7 +18,7 @@ function 起(补 = {}) {
     prev_cell: 'E0S0P0', events: [], 结: [], 组零点: {}, 组六头: {}, 未归组: 0,
     六头迁移: { at: new Date().toISOString(), 旧总: 0 },
     零点迁移: { at: new Date().toISOString(), 归组: '常用聊天组', 旧零点: { E: 0, S: 0, P: 0 } },
-    快照启用: true, 会话快照: { aaaaaaaa: {
+    快照启用: true, 会话快照: { c4b92d68: {
       E: { x: 0, t: new Date().toISOString(), τ: 12 },
       S: { x: 0, t: new Date().toISOString(), τ: 12 },
       P: { x: 0, t: new Date().toISOString(), τ: 12 },
@@ -27,7 +27,7 @@ function 起(补 = {}) {
     streak: {}, ...补,
   }
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify(池, null, 2))
-  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 组: [{ 名: '默认池', 会话: [] }] }, null, 2))
+  writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ 启用: true, 组: [{ 名: '常用聊天组', 会话: ['c4b92d68'] }] }, null, 2))
   return 池
 }
 function 读() {
@@ -60,7 +60,7 @@ test('兜底路径：六头/溢出/零点都记', async () => {
     组六头: { '常用聊天组': { 'E+': { 累计: 6, 桶: [{ d: 今, n: 6 }] } } },
     组零点: { '常用聊天组': { E: 0, S: 0, P: 0 } },
   })
-  await 模.自报兜底推轴(会话, 5, { 启用: true, 组: [{ 名: '常用聊天组', 会话: ['aaaaaaaa'] }] })
+  await 模.自报兜底推轴(会话, 5, { 启用: true, 组: [{ 名: '常用聊天组', 会话: ['c4b92d68'] }] })
   const 池 = 读()
   assert.ok(池.溢出.E.v > 0.05, JSON.stringify(池.溢出))
   assert.ok(池.组六头['常用聊天组']['E+'].累计 >= 7, JSON.stringify(池.组六头))

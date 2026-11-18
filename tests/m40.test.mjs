@@ -1,4 +1,4 @@
-// v0.8 A：从旧 m3 迁移的仍然有效断言
+﻿// v0.8 A：从旧 m3 迁移的仍然有效断言
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
@@ -18,10 +18,10 @@ const 配置 = {
   提醒启用: true,
   注入启用: false,
   刻度: 1,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
-const 会话 = 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b'
+const 会话 = 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b'
 
 function 重置() {
   try { rmSync(join(目录, '情绪池.json.lock')) } catch {}
@@ -36,7 +36,7 @@ test('单轨不进窗口：没有 K 轮次记录，样本 0、值 1.0', async ()
   const ctx = { llm: undefined, agents: { list: () => [] } }
   await 模.跑本轮(ctx, { id: 会话 }, 会话, 3, '回复'.repeat(400), 解, '在吗')
   const 池 = JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
-  const 信 = (池.双轨.信誉 || {})['aaaaaaaa']
+  const 信 = (池.双轨.信誉 || {})['c4b92d68']
   assert.ok(!信 || !信.我 || (信.我.轮 || []).length === 0)
   assert.ok(!信 || !信.我 || Number(信.我.样本) === 0)
   assert.equal(池.双轨.最近.采用, '单轨')

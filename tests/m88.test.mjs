@@ -41,9 +41,12 @@ test('B：跑轨迹里做判定并写事件定名', () => {
   assert.ok(源.includes('波动, 定名, 打点模型'))
 })
 
-test('B：命中时次数+1 并更新模板', () => {
-  assert.ok(源.includes('t.次数 = (Number(t.次数) || 0) + 1'))
-  assert.ok(源.includes('模板更新(t.签名 || t, 签, 0.3)'))
+test('B：定名路径已摘掉旧模板尺（2026-11-18 A 案）', () => {
+  assert.ok(!源.includes('模板判定(签'))
+  assert.ok(!源.includes('模板更新(t.签名'))
+  assert.ok(!源.includes('模板签名(段点)'))
+  assert.ok(源.includes("来源: '自报'"))
+  assert.ok(源.includes("来源: '形状'"))
 })
 
 test('B：空模板结构', () => {

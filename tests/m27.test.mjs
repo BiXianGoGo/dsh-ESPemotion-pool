@@ -7,7 +7,6 @@ import { join } from 'node:path'
 
 const 目录 = mkdtempSync(join(tmpdir(), '情绪池-m27-'))
 process.env.EMOTION_POOL_DIR = 目录
-process.env.QQ_BRIDGE_PATH = join(目录, 'qq-bridge-config.json')
 const 模块 = await import('../lib/index.js')
 
 const 基础配置 = {
@@ -20,7 +19,7 @@ const 基础配置 = {
   QQ报警: true,
   每日衰减系数: 0.9,
   守恒上限: 1.0,
-  写入者: ['aaaaaaaa'],
+  写入者: ['c4b92d68'],
   注入启用: false,
   刻度: 1,
   双轨校验: true,
@@ -30,7 +29,7 @@ const 基础配置 = {
   日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 
-const 会话 = { id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }
+const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
 const 发送 = []
 globalThis.fetch = async (url, opts) => {
   发送.push({ url: String(url), body: opts && opts.body ? String(opts.body) : '' })
@@ -38,7 +37,6 @@ globalThis.fetch = async (url, opts) => {
 }
 
 function 重置(改 = {}) {
-  writeFileSync(join(目录, 'qq-bridge-config.json'), JSON.stringify({ NapCat: 'http://127.0.0.1:3000', 私聊QQ: 123456789, 令牌: '' }), 'utf8')
   writeFileSync(join(目录, '情绪池.json'), JSON.stringify({ rev: 0, axes: { E: 0, S: 0, P: 0 }, spine: { S: 0 }, prev_cell: 'E0S0P0', events: [], stats: { selfreport_total: 0, missed_total: 0 } }, null, 2))
   writeFileSync(join(目录, '情绪池配置.json'), JSON.stringify({ ...基础配置, ...改 }, null, 2))
   for (const f of ['情绪池-分歧.jsonl', '情绪池-双轨计数.json', '情绪池-日志.md', '情绪池-日志.jsonl', '情绪池.json.lock']) {
@@ -111,7 +109,7 @@ test('分歧率刚好 40%（2/5）→ 报警一次并私聊', async () => {
   assert.equal(发送.length, 1)
   assert.match(发送[0].url, /send_private_msg$/)
   const 体 = JSON.parse(发送[0].body)
-  assert.equal(体.user_id, 123456789)
+  assert.equal(体.user_id, 2818003325)
   assert.match(体.message[0].data.text, /分歧率 40%/)
   assert.match(体.message[0].data.text, /不一致只记录/)
 })

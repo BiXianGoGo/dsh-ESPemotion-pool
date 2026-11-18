@@ -12,7 +12,7 @@ const M = await import('../lib/index.js')
 
 const 基础 = {
   启用: true, 自报推轴: false, 吸附系数: 0.4, 双轨K: 1,
-  写入者: ['aaaaaaaa'], 注入启用: true, 注入日限: 24, 保底间隔分钟: 40, 保底轮数: 5,
+  写入者: ['c4b92d68'], 注入启用: true, 注入日限: 24, 保底间隔分钟: 40, 保底轮数: 5,
   刻度: 1, 日志: ['情绪池-日志.md', '情绪池-日志.jsonl'],
 }
 const 空池 = () => ({
@@ -27,7 +27,7 @@ const 重置 = (改 = {}, 池 = 空池()) => {
   }
 }
 const 池 = () => JSON.parse(readFileSync(join(目录, '情绪池.json'), 'utf8'))
-const 会话 = { id: 'session-aaaaaaaa-f40c-4fc3-ad69-f8338376753b' }
+const 会话 = { id: 'session-c4b92d68-f40c-4fc3-ad69-f8338376753b' }
 function 起插件() {
   const 监听 = []; const 路由 = []; const 槽 = []
   const ctx = {

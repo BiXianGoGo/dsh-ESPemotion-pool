@@ -152,9 +152,9 @@ test('设置三键：越界拒绝', () => {
   assert.ok(M.校验设置('蓝收缩时长', -1).错误)
 })
 
-test('版本：导出与 package.json 一致，且为 0.2.5', () => {
+test('版本：导出与 package.json 一致，且为 0.2.7', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  assert.equal(M.版本, '0.2.5')
+  assert.equal(M.版本, '0.2.7')
   assert.equal(pkg.version, M.版本)
 })
 
@@ -164,7 +164,7 @@ test('轨迹摘要带 版本/波动/打点模型，跑一轮后波动可读', as
   const { c, 会话 } = ctx([好JSON(0.2, 0.1, -0.1)])
   await M.跑轨迹(c, 会话, 'session-aaaaaaaa-1111', 26, '这一段足够长可以打点')
   const 摘 = M.轨迹摘要()
-  assert.equal(摘.版本, '0.2.5')
+  assert.equal(摘.版本, '0.2.7')
   assert.equal(摘.打点模型, '会话')
   assert.ok(Array.isArray(摘.波动))
 })
