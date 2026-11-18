@@ -77,10 +77,21 @@ test('S4 混合公式：n=500 时 混合比 0.5，值落在两者之间', (t) =>
   assert.equal(少.门槛.先验, true)
 })
 
-test('S5 种子缺失：读种子返回 null，校准回落先验', () => {
-  assert.equal(读种子('C:/__no_such_home__'), null)
-  const r = 校准([造曲线([0, 1, 0, 1])], { 种子: null })
-  assert.equal(r.门槛.先验, true)
-  assert.equal(r.种子数, 0)
-  assert.equal(r.混合比, 1)
+test('S5 种子缺失：HOME 无种子回退插件包，读不到才回落先验', () => {
+  // 2026-11-18 任务单 2250：种子随包 → 空 HOME 应回退 assets\seed-500.json
+  const 回退 = 读种子('C:/__no_such_home__')
+  assert.ok(回退 && 回退.曲线.length === 500, '空 HOME 应回退插件种子 500 条')
+  // 用 EP_SEED_PATH 指向不存在的文件，模拟「两处都没有」
+  const 旧 = process.env.EP_SEED_PATH
+  process.env.EP_SEED_PATH = 'C:/__no_such_seed__.json'
+  try {
+    assert.equal(读种子('C:/__no_such_home__'), null)
+    const r = 校准([造曲线([0, 1, 0, 1])], { 种子: null })
+    assert.equal(r.门槛.先验, true)
+    assert.equal(r.种子数, 0)
+    assert.equal(r.混合比, 1)
+  } finally {
+    if (旧 === undefined) delete process.env.EP_SEED_PATH
+    else process.env.EP_SEED_PATH = 旧
+  }
 })

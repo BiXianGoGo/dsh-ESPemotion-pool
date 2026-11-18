@@ -60,9 +60,9 @@ test('m150-3 8 片：八条叶子都能定位到 1..8，且枝是父路径', () 
   }
 })
 
-test('m150-4 接线：跳变不进表、片/枝写进事件与轨迹、波动只定位不定名（源码守卫）', () => {
+test('m150-4 接线：只有趋势走表（R-3 修正）、片/枝写进事件与轨迹、基线/波动/跳变不进表（源码守卫）', () => {
   const idx = 源码('lib/index.js')
-  assert.ok(idx.includes("轮廓贴.状态 === '基线' || 轮廓贴.状态 === '波动' || 轮廓贴.状态 === '趋势'"), '只对 基线/波动/趋势 走表')
+  assert.ok(idx.includes("if (轮廓贴 && 轮廓贴.状态 === '趋势') {"), '只对趋势走表')
   assert.ok(!idx.includes("轮廓贴.状态 === '跳变'"), '跳变不应进表')
   assert.ok(idx.includes('走表(v, 池路径中位('), '走表要接池路径中位')
   assert.ok(idx.includes('同轮.片 = 片'), '同轮事件要有片')
@@ -79,7 +79,7 @@ test('m150-5 /state.片分布：8 个计数 + 空片保留 + 卡片读它', () =
   assert.ok(idx.includes('const 计 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 }'), '8 个计数键一个不能少')
   assert.ok(idx.includes('返回 { 样本数: 画.length, 计数: 计, 无片 }') || idx.includes('return { 样本数: 画.length, 计数: 计, 无片 }'))
   const w = 源码('assets/widget.js')
-  assert.ok(w.includes("观行('8 片分布'"), '卡片观测页要显示 8 片分布')
+  assert.ok(w.includes("观行('8 片分布（趋势轮）'"), '卡片观测页要显示 8 片分布')
   assert.ok(w.includes('最新.片分布.计数'), '计数从 /state 取')
   assert.ok(w.includes("for (var i = 1; i <= 8; i++)"), '空片也要保留位')
 })
