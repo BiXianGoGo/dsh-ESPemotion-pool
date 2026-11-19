@@ -99,14 +99,17 @@ test('第三次 0.15：累计 0.45 刚好成结，值 0', async () => {
   assert.ok(刺[0].率 > 0, '速率要落盘')
 })
 
-test('急通道：单条 0.30、距上条 5 分钟（速率 0.06）→ 结 0.10', async () => {
-  const 五分钟前 = new Date(Date.now() - 5 * 60000).toISOString()
-  const 起 = 起插件([{ id: 'e-0001', t: 五分钟前, delta_raw: { E: 0, S: 0, P: 0 }, note: '旧事', sid: 'c4b92d68', turn: 'old' }])
+test('急通道：单条 0.30、距上条 4 分钟（速率 0.075）→ 结 0.10', async () => {
+  // 2026-11-19：原来用 5 分钟（率 0.06），离「急 ≥0.05」的档线太近；
+  // 整套并发跑时机器的排队延迟会把秒级时间戳拖过线，偶发掉到「缓」。
+  // 改成 4 分钟（率 0.075），离档线有 50% 余量，并给率留 ±0.01 容差。
+  const 四分钟前 = new Date(Date.now() - 4 * 60000).toISOString()
+  const 起 = 起插件([{ id: 'e-0001', t: 四分钟前, delta_raw: { E: 0, S: 0, P: 0 }, note: '旧事', sid: 'c4b92d68', turn: 'old' }])
   await 报(起.路由, { E: 0.30, 轮: 'r1', 注: '一下砸过来' })
   const 刺 = 起.池().结
   assert.equal(刺.length, 1)
   assert.equal(刺[0].值, 0.1)
-  assert.equal(刺[0].率, 0.06)
+  assert.ok(Math.abs(Number(刺[0].率) - 0.075) <= 0.01, '率 应约 0.075，实际 ' + 刺[0].率)
   assert.equal(刺[0].速, '急')
 })
 

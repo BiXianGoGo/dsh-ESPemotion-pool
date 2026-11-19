@@ -9,6 +9,7 @@ test('候选裁剪：按最近时间倒序，只留 50', () => {
 })
 
 test('未知名字：confirm/drop 400，rename 旧不存在 400', () => {
-  assert.ok(后端.includes("error: '候选里没有这个名字：' + 名"))
-  assert.ok(后端.includes("error: '模板与候选里都没有这个名字：' + 旧"))
+  assert.ok(后端.includes("error: '待命名里没有这一条'"))
+  assert.ok(后端.includes("error: '旧条目不能在这里删'"))
+  assert.ok(后端.includes("error: '命名表里没有这个名字：' + 旧"))
 })

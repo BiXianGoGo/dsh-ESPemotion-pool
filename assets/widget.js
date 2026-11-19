@@ -611,13 +611,25 @@ function 带号(v) { var x = Number(v) || 0; return (x >= 0 ? '+' : '−') + Mat
     卡.querySelector('#cands').addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('button') : null
       if (!b) return
-      var 名 = b.getAttribute('data-ok') || b.getAttribute('data-drop')
-      var 路径 = b.getAttribute('data-ok') ? '/dsh-emotion-pool/tpl/confirm' : '/dsh-emotion-pool/tpl/drop'
+      var row = b.closest('.ep-cd')
+      if (!row) return
+      var 格 = String(row.getAttribute('data-grid') || '').split(',')
+      var 点 = { E: Number(格[0]) || 0, S: Number(格[1]) || 0, P: Number(格[2]) || 0 }
       b.disabled = true
-      送POST(路径, { 名: 名 }).then(function (o) {
-        if (!o.ok) 卡.querySelector('#tplhead').textContent = '操作失败：' + (o.error || o.__码)
-        画待确认(true)
-      }).catch(function () { 画待确认(true) })
+      if (b.getAttribute('data-drop') != null) {
+        送POST('/dsh-emotion-pool/tpl/drop', 点).then(function (o) {
+          if (!o.ok) 卡.querySelector('#tplhead').textContent = '丢弃失败：' + (o.error || o.__码)
+          画待确认(true)
+        }).catch(function () { 画待确认(true) })
+      } else {
+        var 输 = row.querySelector('.ep-namein')
+        var 名 = String((输 && 输.value) || '').trim()
+        if (!名) { b.disabled = false; 卡.querySelector('#tplhead').textContent = '先给这条起个名'; return }
+        送POST('/dsh-emotion-pool/tpl/confirm', { 名: 名, 待命名: 点 }).then(function (o) {
+          if (!o.ok) 卡.querySelector('#tplhead').textContent = '收录失败：' + (o.error || o.__码)
+          画待确认(true)
+        }).catch(function () { 画待确认(true) })
+      }
     })
     卡.querySelector('#tpls').addEventListener('click', function (e) {
       var r = e.target.closest ? e.target.closest('.ep-rn') : null
@@ -1682,9 +1694,13 @@ function 画待确认(强制) {
             var 池p = (最新 && 最新.池列表) || []
             for (var q = 0; q < 池p.length; q++) if ((池p[q].会话 || []).indexOf(c.会话) >= 0) { 池名 = 池p[q].池名 || 池p[q].名 || ''; break }
           } catch (e2) {}
-          h += '<div class="ep-cd"><span class="ep-cn" title="' + 转义(c.名) + '">' + (池名 ? '<em class="ep-seg">' + 转义(池名) + '</em>' : '') + 转义(c.名) + '(' + (c.次数 || 0) + ')' + (c.起 ? '<em class="ep-seg">第' + c.起 + '–' + c.止 + '段</em>' : '') + '</span>' +
+          var 格串 = (Number(c.E) || 0) + ',' + (Number(c.S) || 0) + ',' + (Number(c.P) || 0)
+          var 轴文 = 'E ' + 带号(c.E) + ' · S ' + 带号(c.S) + ' · P ' + 带号(c.P)
+          h += '<div class="ep-cd" data-grid="' + 格串 + '"><span class="ep-cn">' + 轴文 + '（' + (c.次数 || 0) + ' 次）' +
+            (c.旧 ? '<em class="ep-seg">旧 · 无曲线</em>' : '') + (池名 ? '<em class="ep-seg">' + 转义(池名) + '</em>' : '') + '</span>' +
             迷你曲线(c.点) +
-            '<button type="button" data-ok="' + 转义(c.名) + '">确认</button><button type="button" data-drop="' + 转义(c.名) + '">丢弃</button></div>'
+            '<input class="ep-namein" placeholder="起个名" style="width:88px;background:#11141c;color:#dfe4f1;border:1px solid #2b3346;border-radius:4px;font:inherit;font-size:11px;padding:1px 4px" />' +
+            '<button type="button" data-ok="1">收录</button><button type="button" data-drop="1">丢弃</button></div>'
         }
         盒.innerHTML = h
       }
