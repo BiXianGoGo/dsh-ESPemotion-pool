@@ -97,6 +97,17 @@
     '.ep-cd .ep-seg{font-style:normal;color:#7d869c;font-size:10px;margin-left:4px}'+
     '.ep-cn{flex:1;font-size:12px;color:#dfe4f1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
     '.ep-cd button,.ep-tpls button{background:#1a1f2c;color:#9fe4d2;border:1px solid #2b3346;border-radius:6px;padding:2px 7px;font:inherit;font-size:11px;cursor:pointer;flex:none}'+
+    '.ep-ncards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}'+
+    '.ep-ncard{background:#141924;border:1px solid #222a3a;border-radius:8px;padding:8px;min-width:0}'+
+    '.ep-ncard-空{opacity:.55}'+
+    '.ep-nhead{display:flex;align-items:center;gap:6px;font-size:12px;color:#dfe4f1}'+
+    '.ep-nhead .ep-cn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+    '.ep-nmeta{font-size:10px;color:#7d869c;flex:none}'+
+    '.ep-nbody{margin-top:6px;display:flex;align-items:center;min-height:28px}'+
+    '.ep-nbody svg{width:100%;height:36px;display:block}'+
+    '.ep-rn{flex:none;cursor:pointer;color:#9fe4d2;font-size:11px}'+
+    '.ep-oldfold{display:flex;align-items:center;gap:8px;cursor:pointer;border:1px dashed #2b3346;border-radius:6px;padding:6px 8px;margin-top:10px;color:#7d869c;font-size:11px}'+
+    '.ep-oldlist{padding:4px 0 0 8px}'+
     '.ep-tplhead,.ep-h{cursor:pointer}'+
     '.ep-h{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:1px;color:#7d869c;margin:12px 0 6px;font-weight:600}',
     '.ep-htabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}',
@@ -423,7 +434,7 @@ function 带号(v) { var x = Number(v) || 0; return (x >= 0 ? '+' : '−') + Mat
     '    <div class="ep-pagetitle">情绪待命名确认页</div>' +
     '    <div class="ep-tplhead" id="tplhead">—</div>' +
     '    <div class="ep-cand" id="cands"><div class="ep-none">还没有待确认的名字</div></div>' +
-    '    <div class="ep-h ep-tplfold" id="tplfold">模板 <span class="ep-tpln">0</span> <span class="ep-tplar">▸ 展开</span></div>' +
+    '    <div class="ep-h ep-tplfold" id="tplfold">名字库 <span class="ep-tpln">0</span> <span class="ep-tplsum" id="tplsum"></span> <span class="ep-tplar">▸ 展开</span></div>' +
     '    <div class="ep-tpls" id="tpls" style="display:none"></div>' +
     '  </div>' +
     '  <div class="ep-page" data-page="4">' +
@@ -1683,34 +1694,58 @@ function 画待确认(强制) {
     .then(function (o) {
       if (!o || !o.ok) throw new Error((o && o.error) || '读取失败')
       var 候 = (o.候选 || []), 模s = (o.模板 || [])
-      头.textContent = '本次待确认 ' + 候.length + ' · 模板 ' + 模s.length
-      if (!候.length) { 盒.innerHTML = '<div class="ep-none">还没有待确认的名字</div>' }
-      else {
-        var h = ''
-        for (var i = 0; i < Math.min(10, 候.length); i++) {
-          var c = 候[i]
-          var 池名 = ''
-          try {
-            var 池p = (最新 && 最新.池列表) || []
-            for (var q = 0; q < 池p.length; q++) if ((池p[q].会话 || []).indexOf(c.会话) >= 0) { 池名 = 池p[q].池名 || 池p[q].名 || ''; break }
-          } catch (e2) {}
-          var 格串 = (Number(c.E) || 0) + ',' + (Number(c.S) || 0) + ',' + (Number(c.P) || 0)
-          var 轴文 = 'E ' + 带号(c.E) + ' · S ' + 带号(c.S) + ' · P ' + 带号(c.P)
-          h += '<div class="ep-cd" data-grid="' + 格串 + '"><span class="ep-cn">' + 轴文 + '（' + (c.次数 || 0) + ' 次）' +
-            (c.旧 ? '<em class="ep-seg">旧 · 无曲线</em>' : '') + (池名 ? '<em class="ep-seg">' + 转义(池名) + '</em>' : '') + '</span>' +
-            迷你曲线(c.点) +
-            '<input class="ep-namein" placeholder="起个名" style="width:88px;background:#11141c;color:#dfe4f1;border:1px solid #2b3346;border-radius:4px;font:inherit;font-size:11px;padding:1px 4px" />' +
-            '<button type="button" data-ok="1">收录</button><button type="button" data-drop="1">丢弃</button></div>'
+      var 新条 = [], 旧条 = []
+      for (var q0 = 0; q0 < 候.length; q0++) { if (候[q0] && 候[q0].旧) 旧条.push(候[q0]); else 新条.push(候[q0]) }
+      头.textContent = '本次待确认 ' + 候.length + '（新 ' + 新条.length + ' · 旧 ' + 旧条.length + '）· 名字库 ' + 模s.length
+      var 行 = function (c) {
+        var 池名 = ''
+        try {
+          var 池p = (最新 && 最新.池列表) || []
+          for (var q = 0; q < 池p.length; q++) if ((池p[q].会话 || []).indexOf(c.会话) >= 0) { 池名 = 池p[q].池名 || 池p[q].名 || ''; break }
+        } catch (e2) {}
+        var 格串 = (Number(c.E) || 0) + ',' + (Number(c.S) || 0) + ',' + (Number(c.P) || 0)
+        var 轴文 = 'E ' + 带号(c.E) + ' · S ' + 带号(c.S) + ' · P ' + 带号(c.P)
+        return '<div class="ep-cd" data-grid="' + 格串 + '"><span class="ep-cn">' + 轴文 + '（' + (c.次数 || 0) + ' 次）' +
+          (池名 ? '<em class="ep-seg">' + 转义(池名) + '</em>' : '') + '</span>' +
+          迷你曲线(c.点) +
+          '<input class="ep-namein" placeholder="起个名" style="width:88px;background:#11141c;color:#dfe4f1;border:1px solid #2b3346;border-radius:4px;font:inherit;font-size:11px;padding:1px 4px" />' +
+          '<button type="button" data-ok="1">收录</button><button type="button" data-drop="1">丢弃</button></div>'
+      }
+      var h = ''
+      for (var i = 0; i < Math.min(10, 新条.length); i++) h += 行(新条[i])
+      if (!新条.length) h += '<div class="ep-none">还没有待确认的新名字</div>'
+      if (旧条.length) {
+        h += '<div class="ep-oldfold" id="oldfold"><span class="ep-cn">旧条目 ' + 旧条.length + ' · 无曲线</span><span class="ep-tplar">▸</span></div>' +
+          '<div class="ep-oldlist" id="oldlist" style="display:none">'
+        for (var j = 0; j < Math.min(5, 旧条.length); j++) {
+          var c2 = 旧条[j]
+          h += '<div class="ep-cd"><span class="ep-cn">E ' + 带号(c2.E) + ' · S ' + 带号(c2.S) + ' · P ' + 带号(c2.P) + '（' + (c2.次数 || 0) + ' 次）</span></div>'
         }
-        盒.innerHTML = h
+        h += '<div class="ep-none">其余 ' + Math.max(0, 旧条.length - 5) + ' 条不出列，只作计数</div></div>'
       }
+      盒.innerHTML = h
       候选补(盒)
+      var 旧折 = 盒.querySelector('#oldfold')
+      if (旧折) 旧折.addEventListener('click', function () {
+        var lst = 盒.querySelector('#oldlist')
+        if (!lst) return
+        var 开 = lst.style.display !== 'none'
+        lst.style.display = 开 ? 'none' : 'block'
+        var 标 = 旧折.querySelector('.ep-tplar'); if (标) 标.textContent = 开 ? '▸' : '▾'
+      })
       折.querySelector('.ep-tpln').textContent = String(模s.length)
-      if (!模s.length) { 模.innerHTML = '<div class="ep-none">还没有模板</div>'; return }
-      var t = ''
+      var 有原 = 0
+      for (var z = 0; z < 模s.length; z++) if (模s[z].有原型) 有原++
+      var 摘 = 折.querySelector('#tplsum'); if (摘) 摘.textContent = '· ' + 有原 + ' 有原型 · ' + (模s.length - 有原) + ' 无样本'
+      if (!模s.length) { 模.innerHTML = '<div class="ep-none">还没有名字</div>'; return }
+      var t = '<div class="ep-ncards">'
       for (var k = 0; k < 模s.length; k++) {
-        t += '<div class="ep-tpl"><span class="ep-cn">' + 转义(模s[k].名) + '(' + (模s[k].次数 || 0) + ')</span><span class="ep-rn" data-rn="' + 转义(模s[k].名) + '">改名</span></div>'
+        var m = 模s[k]
+        t += '<div class="ep-ncard' + (m.有原型 ? '' : ' ep-ncard-空') + '"><div class="ep-nhead"><span class="ep-cn">' + 转义(m.名) + '</span>' +
+          '<span class="ep-nmeta">' + (m.原型数 || 0) + ' 条原型</span><span class="ep-rn" data-rn="' + 转义(m.名) + '">改名</span></div>' +
+          '<div class="ep-nbody">' + (m.有原型 && m.样本 && m.样本.length >= 2 ? 迷你曲线(m.样本) : '<span class="ep-none">无样本</span>') + '</div></div>'
       }
+      t += '</div>'
       模.innerHTML = t
     })
     .catch(function () { 头.textContent = '读取失败' })
@@ -1832,6 +1867,8 @@ function 绑分享(盒) {
     fetch('/dsh-emotion-pool/pack/preview' + 带参数(), { cache: 'no-store' }).then(function (r) { return r.json() }).then(function (o) {
       if (!o || !o.ok) throw new Error((o && (o.错误 || o.error)) || '预览失败')
       var 行 = ['共 ' + Number(o.条数) + ' 条；' + (o.匿名 ? '**匿名（名字1…N）** · ' : '') + (o.带依据 ? '**带依据**（别人能看到我们之间的话）' : '不带依据（默认）')]
+      if (o.种子 && Number(o.种子.含)) 行.push('种子：' + Number(o.种子.条数) + ' 条（匿名曲线，只有 E/S/P 数字）')
+      else 行.push('种子：未含')
       var 条们 = o.条目 || []
       for (var i = 0; i < 条们.length; i++) {
         var z = 条们[i]
@@ -1852,7 +1889,7 @@ function 绑分享(盒) {
     fetch('/dsh-emotion-pool/pack/export' + 带参数(), { cache: 'no-store' }).then(function (r) { return r.json() }).then(function (o) {
       if (!o || !o.ok) throw new Error((o && (o.错误 || o.error)) || '导出失败')
       if (码框) 码框.value = o.码 || ''
-      提示('export', '已导出 ' + Number(o.条数) + ' 条（' + Number(o.字节数) + ' 字节）' + (o.匿名 ? ' · 匿名代号' : '') + (o.带依据 ? ' · 含依据' : ' · 不含依据'))
+      提示('export', '已导出 ' + Number(o.条数) + ' 条（' + Number(o.字节数) + ' 字节）' + (o.匿名 ? ' · 匿名代号' : '') + (o.带依据 ? ' · 含依据' : ' · 不含依据') + (o.种子 && Number(o.种子.含) ? ' · 含种子 ' + Number(o.种子.条数) + ' 条' : ' · 未含种子'))
     }).catch(function (e) { 提示('export', '导出失败：' + (e && e.message ? e.message : e)) })
   })
   var 复 = 盒.querySelector('[data-pcopy]')
@@ -1873,6 +1910,7 @@ function 绑分享(盒) {
         var o = x.o || {}
         if (!o.ok) { 提示('import', (o.解析失败 ? '解析失败：' + o.解析失败 : (o.错误 || o.error || '预演失败'))); if (确) 确.disabled = true; return }
         var 行 = ['将新增 ' + Number(o.将新增) + ' 条', '撞名（保留本地）' + Number(o.撞名) + ' 条', '版本不符（只读试看）' + Number(o.版本不符) + ' 条', '解析失败 0 条']
+        if (o.种子) 行.push('种子：' + (Number(o.种子.条数) > 0 ? Number(o.种子.条数) + ' 条 · ' + (o.种子.将写入 ? '将写入' : String(o.种子.原因 || '不写')) : String(o.种子.原因 || '未含种子')))
         var 细 = o.明细 || {}
         if ((细.将新增 || []).length) 行.push('新增示例：' + 细.将新增.map(function (z) { return z.名字 }).join('、'))
         if ((细.撞名 || []).length) 行.push('撞名示例：' + 细.撞名.map(function (z) { return z.名字 }).join('、'))
@@ -1891,7 +1929,7 @@ function 绑分享(盒) {
       .then(function (o) {
         if (!o || !o.ok) throw new Error((o && (o.错误 || o.error)) || '导入失败')
         var w = o.已写盘 || {}
-        提示('import', '已写盘：新增 ' + Number(w.新增) + ' 条，只读 ' + Number(w.只读) + ' 条，撞名 ' + Number(w.撞名) + ' 条')
+        提示('import', '已写盘：新增 ' + Number(w.新增) + ' 条，只读 ' + Number(w.只读) + ' 条，撞名 ' + Number(w.撞名) + ' 条' + (o.种子 && Number(o.种子.已写) ? ' · 种子已写入' : ''))
         if (预) 预.textContent = '命名表：' + String(o.命名表 || '') + '\n只读表：' + String(o.只读表 || '')
         确.disabled = true
       }).catch(function (e) { 提示('import', '导入失败：' + (e && e.message ? e.message : e)) })

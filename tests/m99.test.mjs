@@ -15,7 +15,8 @@ test('待确认页：候选行有确认/丢弃与迷你曲线', () => {
   assert.ok(前端.includes("data-ok="))
   assert.ok(前端.includes("data-drop="))
   assert.ok(前端.includes("无曲线"))
-  assert.ok(前端.includes('Math.min(10, 候.length)'))
+  assert.ok(前端.includes('Math.min(10, 新条.length)'))
+  assert.ok(前端.includes('旧条目 '))
 })
 
 test('待确认页：确认/丢弃/改名走 POST，模板可折叠', () => {
